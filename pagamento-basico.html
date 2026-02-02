@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Checkout - Plano Básico</title>
+<link rel="icon" href="logo.ico">
+<style>
+* { 
+  box-sizing: border-box; 
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Arial, sans-serif; 
+}
+
+body {
+  background: 
+    linear-gradient(rgba(10,10,20,0.75), rgba(40,10,30,0.85)),
+    url('https://images.unsplash.com/photo-1554284126-aa88f22d8b74');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+/* CONTAINER CHECKOUT */
+.checkout {
+  background: rgba(255,255,255,0.08);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 22px;
+  max-width: 440px;
+  width: 100%;
+  padding: 28px;
+  box-shadow: 0 25px 70px rgba(0,0,0,0.7);
+  text-align: center;
+}
+
+/* TÍTULO */
+h1 {
+  font-size: 22px;
+  margin-bottom: 6px;
+  font-weight: 700;
+  color: #ff9ac7;
+}
+
+/* PREÇO */
+.price {
+  font-size: 34px;
+  font-weight: bold;
+  color: #ff4fa3;
+  margin-bottom: 20px;
+}
+
+/* QR CODE */
+.qr {
+  margin-bottom: 18px;
+}
+
+.qr img {
+  width: 220px;
+  border-radius: 14px;
+  box-shadow: 0 10px 40px rgba(255,79,163,0.4);
+  border: 2px solid rgba(255,255,255,0.15);
+}
+
+/* BOX PIX */
+.pix-box {
+  background: rgba(0,0,0,0.5);
+  border: 1px dashed #ff4fa3;
+  padding: 14px;
+  border-radius: 12px;
+  font-size: 13px;
+  word-break: break-all;
+  margin-bottom: 16px;
+  color: #ffd1e8;
+}
+
+/* BOTÃO */
+button {
+  width: 100%;
+  padding: 14px;
+  border-radius: 14px;
+  border: none;
+  font-weight: 600;
+  font-size: 16px;
+  background: linear-gradient(135deg, #ff4fa3, #ff1f6d);
+  color: white;
+  cursor: pointer;
+  transition: 0.25s;
+  box-shadow: 0 10px 30px rgba(255,79,163,0.5);
+}
+
+button:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 15px 45px rgba(255,79,163,0.8);
+}
+
+button:active {
+  transform: scale(0.97);
+}
+
+/* SEGURANÇA */
+.secure {
+  margin-top: 14px;
+  font-size: 12px;
+  opacity: 0.75;
+  color: #ffd1e8;
+}
+
+/* TAG PREMIUM */
+.tag {
+  display: inline-block;
+  margin-bottom: 12px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #ff4fa3, #ff9ac7);
+  font-size: 12px;
+  font-weight: 600;
+  color: white;
+}
+
+/* TOAST PIX COPIADO */
+#toast {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  background: rgba(255, 255, 255, 0.1); /* efeito glass */
+  backdrop-filter: blur(10px);
+  color: #fff;
+  padding: 16px 26px;
+  border-radius: 15px;
+  font-size: 15px;
+  box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.4s ease;
+  z-index: 9999;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+#toast.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+</style>
+</head>
+<body>
+
+<div class="checkout">
+  <div class="tag">Plano Básico 💖</div>
+
+  <h1>Plano Básico Academia 🔥</h1>
+  <div class="price">R$ 39,90</div>
+
+  <div class="qr">
+    <!-- TROQUE pela imagem do seu QR Code -->
+    <img src="39,90pix.png" alt="QR Code Pix">
+  </div>
+
+  <div class="pix-box" id="pixCode">
+    00020126360014BR.GOV.BCB.PIX0114+5587996536247520400005303986540539.905802BR5901N6001C62190515JESSICAPERSONAL63048075
+  </div>
+
+  <button onclick="copiarPix()">Copiar código Pix</button>
+
+  <div class="secure">
+    🔒 Pagamento 100% seguro via Pix
+  </div>
+</div>
+
+<!-- TOAST MODERNO -->
+<div id="toast">✅ Código PIX copiado!</div>
+
+<script>
+function copiarPix() {
+  const texto = document.getElementById("pixCode").innerText;
+  navigator.clipboard.writeText(texto);
+  alert("Código Pix copiado!");
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Treino em Casa - Jéssica Personal</title>
+  <link rel="icon" href="logo.ico">
+  <meta name="description" content="Escolha seu treino: perda de peso ou ganho de massa muscular. Comece hoje." />
+
+  <style>
+    * { 
+      box-sizing: border-box; 
+      margin: 0; 
+      padding: 0; 
+      font-family: 'Segoe UI', Arial, sans-serif; 
+    }
+
+    body {
+      background: 
+        linear-gradient(rgba(10,10,20,0.75), rgba(40,10,30,0.85)),
+        url('https://images.unsplash.com/photo-1571019613578-2b193e1b1f1c?auto=format&fit=crop&w=1600&q=80');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      color: #f9fafb;
+    }
+
+    a { text-decoration: none; color: inherit; }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 28px;
+    }
+
+    /* HERO */
+    .hero {
+      text-align: center;
+      padding: 60px 20px;
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(12px);
+      border-radius: 24px;
+      border: 1px solid rgba(255,255,255,0.15);
+      box-shadow: 0 25px 70px rgba(0,0,0,0.6);
+      margin-bottom: 40px;
+    }
+
+    .hero h1 {
+      font-size: clamp(30px, 4vw, 52px);
+      margin-bottom: 12px;
+      font-weight: 700;
+    }
+
+    .hero p {
+      font-size: clamp(15px, 2vw, 20px);
+      opacity: 0.85;
+      margin-bottom: 10px;
+    }
+
+    /* CARDS */
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 26px;
+      margin-top: 20px;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.06);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 20px;
+      padding: 26px;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+      box-shadow: 0 15px 50px rgba(0,0,0,0.5);
+    }
+
+    .card:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 25px 70px rgba(0,0,0,0.7);
+    }
+
+    .card h2 {
+      font-size: 24px;
+      margin-bottom: 14px;
+      font-weight: 700;
+      color: #ff9ac7;
+    }
+
+    .card ul {
+      margin: 18px 0 24px;
+      padding-left: 18px;
+      opacity: 0.9;
+      line-height: 1.6;
+    }
+
+    .price {
+      font-size: 30px;
+      font-weight: bold;
+      margin-bottom: 18px;
+      color: #ff4fa3;
+    }
+
+    /* BOTÕES */
+    .btn {
+      display: inline-block;
+      width: 100%;
+      text-align: center;
+      padding: 15px 20px;
+      border-radius: 14px;
+      font-weight: 600;
+      font-size: 16px;
+      background: linear-gradient(135deg, #ff4fa3, #ff1f6d);
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: 0.25s;
+      box-shadow: 0 10px 30px rgba(255,79,163,0.5);
+    }
+
+    .btn:hover {
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 15px 45px rgba(255,79,163,0.8);
+    }
+
+    .btn:active {
+      transform: scale(0.97);
+    }
+
+    /* FOOTER */
+    .footer {
+      text-align: center;
+      margin-top: 60px;
+      font-size: 13px;
+      opacity: 0.65;
+    }
+
+    @media (max-width: 600px) {
+      .hero { padding: 40px 14px; }
+      .card { padding: 22px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <section class="hero">
+      <h1>Treino em Casa </h1>
+      <p>Escolha o plano ideal para você e comece hoje mesmo.
+        Transforme o seu corpo no conforto do seu lar!</p>
+      <p><strong>Perda de peso</strong> ou <strong>ganho de massa muscular</strong>.</p>
+    </section>
+
+    <section class="cards">
+      <!-- Perda de Peso -->
+      <div class="card">
+  <h2>🔥 Perda de Peso</h2>
+  <ul>
+    <li>Treinos focados em queima de gordura</li>
+    <li>Plano simples e prático</li>
+    <li>Acesso imediato</li>
+  </ul>
+  <div class="price">R$ 69,90</div>
+
+  <!-- Botão principal -->
+  <button class="btn" onclick="checkout('peso')">Quero Emagrecer</button>
+
+  <!-- Botão de detalhes com espaçamento -->
+  <button class="btn secondary" style="margin-top: 12px;" onclick="window.location.href='detalhes-plano-peso.html'">
+    Detalhes do Plano
+  </button>
+</div>
+
+
+      <!-- Ganho de Massa -->
+      <div class="card">
+        <h2>💪 Ganho de Massa</h2>
+        <ul>
+          <li>Treinos para hipertrofia</li>
+          <li>Estratégia progressiva</li>
+          <li>Acesso imediato</li>
+        </ul>
+        <div class="price">R$ 59,90</div>
+        <button class="btn" onclick="checkout('massa')">Quero Ganhar Massa</button>
+        <button class="btn secondary" style="margin-top: 12px;" onclick="window.location.href='detalhes-plano-peso.html'">
+    Detalhes do Plano
+  </button>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <p>© 2026 Jéssica Personal • Todos os direitos reservados</p>
+    </footer>
+  </div>
+
+  <script>
+    const linksPagamento = {
+      peso: "pagamento-peso.html",
+      massa: "pagamento-massa.html"
+    };
+
+    function checkout(tipo) {
+      window.location.href = linksPagamento[tipo];
+    }
+  </script>
+
+  
+</body>
+</html>

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Checkout - Ganho de Massa</title>
+<link rel="icon" href="logo.ico">
+<style>
+* { box-sizing: border-box; font-family: Arial, sans-serif; }
+
+body {
+  background: url("https://images.unsplash.com/photo-1554284126-aa88f22d8b74") no-repeat center center fixed;
+  background-size: cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+  position: relative;
+}
+
+/* overlay escuro + rosa */
+body::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, rgba(2,6,23,0.85), rgba(131,24,67,0.75));
+  z-index: 0;
+}
+
+.checkout {
+  position: relative;
+  z-index: 1;
+  background: rgba(2,6,23,0.92);
+  border: 1px solid rgba(236,72,153,0.35);
+  border-radius: 18px;
+  max-width: 420px;
+  width: 100%;
+  padding: 26px;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+  backdrop-filter: blur(6px);
+}
+
+h1 {
+  text-align: center;
+  font-size: 22px;
+  margin-bottom: 6px;
+  color: #f9a8d4;
+}
+
+.subtitle {
+  text-align: center;
+  font-size: 13px;
+  opacity: 0.85;
+  margin-bottom: 14px;
+  color: #fbcfe8;
+}
+
+.price {
+  text-align: center;
+  font-size: 30px;
+  font-weight: bold;
+  color: #22c55e;
+  margin-bottom: 18px;
+}
+
+.qr {
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.qr img {
+  width: 220px;
+  border-radius: 12px;
+  border: 2px solid rgba(236,72,153,0.4);
+}
+
+.pix-box {
+  background: rgba(2,6,23,0.9);
+  border: 1px dashed #ec4899;
+  padding: 12px;
+  border-radius: 12px;
+  font-size: 14px;
+  word-break: break-all;
+  margin-bottom: 14px;
+  color: #fbcfe8;
+}
+
+button {
+  width: 100%;
+  padding: 13px;
+  border-radius: 12px;
+  border: none;
+  font-weight: bold;
+  background: linear-gradient(135deg, #ec4899, #db2777);
+  color: white;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+button:hover { 
+  transform: scale(1.02);
+  opacity: 0.95;
+}
+
+.secure {
+  text-align: center;
+  font-size: 12px;
+  opacity: 0.75;
+  margin-top: 12px;
+  color: #f9a8d4;
+}
+</style>
+</head>
+<body>
+
+<div class="checkout">
+  <h1>Plano Ganho de Massa 💪💖</h1>
+  <div class="subtitle">Treinos focados em crescimento muscular e resultados reais</div>
+
+  <div class="price">R$ 59,90</div>
+
+  <div class="qr">
+    <!-- TROQUE pela imagem do seu QR Code -->
+    <img src="59,90pix.png" alt="QR Code Pix">
+  </div>
+
+  <div class="pix-box" id="pixCode">
+    00020126360014BR.GOV.BCB.PIX0114+5587996536247520400005303986540559.905802BR5901N6001C62190515JESSICAPERSONAL6304DE71
+  </div>
+
+  <button onclick="copiarPix()">Copiar código Pix</button>
+
+  <div class="secure">
+    Pagamento 100% seguro via Pix ✅
+  </div>
+</div>
+
+<script>
+function copiarPix() {
+  const texto = document.getElementById("pixCode").innerText;
+  navigator.clipboard.writeText(texto);
+  alert("Código Pix copiado!");
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Treino na Academia • Jéssica Personal</title>
+  <link rel="icon" href="logo.ico">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
+    body {
+      background:
+        radial-gradient(circle at top right, rgba(255,120,180,0.25), transparent 40%),
+        radial-gradient(circle at bottom left, rgba(255,200,220,0.25), transparent 45%),
+        linear-gradient(135deg, #0a0a14, #12081a, #2a0a1f);
+      color: #fff;
+      min-height: 100vh;
+      text-align: center;
+      padding: 40px 15px;
+    }
+
+    .container {
+      max-width: 750px;
+      margin: auto;
+      padding: 30px;
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(16px);
+      border-radius: 22px;
+      border: 1px solid rgba(255,255,255,0.1);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+    }
+
+    h1 { font-size: 38px; margin-bottom: 10px; font-weight: 700; }
+    .subtitle { opacity: 0.85; font-size: 16px; margin-bottom: 30px; }
+
+    .section { margin: 25px 0; text-align: left; }
+    .section h2 { font-size: 22px; color: #ff9ac7; margin-bottom: 12px; }
+    .section p, .section ul { font-size: 15px; line-height: 1.6; opacity: 0.9; }
+    .section ul { list-style: none; padding-left: 0; }
+    .section ul li { position: relative; padding-left: 22px; margin-bottom: 10px; }
+    .section ul li::before {
+      content: '✔';
+      position: absolute;
+      left: 0;
+      color: #ff4fa3;
+    }
+
+    .icons { display: flex; gap: 20px; flex-wrap: wrap; margin-top: 15px; }
+    .icons .icon-box {
+      flex: 1;
+      min-width: 150px;
+      background: rgba(255,255,255,0.04);
+      padding: 15px;
+      border-radius: 14px;
+      text-align: center;
+      border: 1px solid rgba(255,255,255,0.08);
+      transition: 0.3s;
+    }
+    .icons .icon-box:hover { transform: translateY(-5px); box-shadow: 0 15px 35px rgba(255,79,163,0.4); }
+    .icons i { font-size: 28px; margin-bottom: 8px; color: #ff4fa3; }
+
+    .testimonial {
+      background: rgba(255,255,255,0.04);
+      border-radius: 14px;
+      padding: 15px 18px;
+      margin: 12px 0;
+      border-left: 4px solid #ff4fa3;
+      font-size: 14px;
+      opacity: 0.9;
+    }
+    .testimonial span { font-weight: 600; color: #ff9ac7; }
+
+    .btn {
+      display: inline-block;
+      width: 100%;
+      padding: 15px;
+      margin-top: 20px;
+      border-radius: 14px;
+      border: none;
+      font-weight: 600;
+      font-size: 16px;
+      cursor: pointer;
+      background: linear-gradient(135deg, #ff4fa3, #ff1f6d);
+      color: white;
+      transition: 0.25s;
+      box-shadow: 0 10px 30px rgba(255,79,163,0.4);
+    }
+    .btn:hover { transform: translateY(-2px) scale(1.02); box-shadow: 0 15px 40px rgba(255,79,163,0.6); }
+    .btn.secondary {
+      background: linear-gradient(135deg, #ffd1e8, #ff9ac7);
+      color: #2a0a1f;
+      box-shadow: 0 10px 30px rgba(255,154,199,0.4);
+    }
+    .btn.secondary:hover { box-shadow: 0 15px 40px rgba(255,154,199,0.6); }
+
+    footer { margin-top: 20px; font-size: 12px; opacity: 0.5; text-align: center; }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>🏋️ Treino na Academia</h1>
+    <p class="subtitle">
+      Treinos completos com equipamentos, pesos livres e acompanhamento profissional, para resultados rápidos e eficientes.
+    </p>
+
+    <!-- COMO FUNCIONA -->
+    <div class="section">
+      <h2>⚡ Como funciona?</h2>
+      <div class="icons">
+        <div class="icon-box">
+          <i class="fa-solid fa-dumbbell"></i>
+          <p>Treinos com pesos livres e máquinas</p>
+        </div>
+        <div class="icon-box">
+          <i class="fa-solid fa-stopwatch"></i>
+          <p>Sessões de 40 a 60 min</p>
+        </div>
+        <div class="icon-box">
+          <i class="fa-solid fa-chart-line"></i>
+          <p>Progressão guiada passo a passo</p>
+        </div>
+        <div class="icon-box">
+          <i class="fa-solid fa-user-check"></i>
+          <p>Suporte direto com a Jéssica</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- BENEFÍCIOS -->
+    <div class="section">
+      <h2>🔥 Benefícios do plano</h2>
+      <ul>
+        <li>Treinos estruturados e intensos</li>
+        <li>Resultados visíveis rapidamente</li>
+        <li>Desenvolvimento muscular completo</li>
+        <li>Orientação profissional constante</li>
+      </ul>
+    </div>
+
+    <!-- DEPOIMENTOS -->
+    <div class="section">
+      <h2>💬 Depoimentos</h2>
+      <div class="testimonial">
+        "Treinar na academia com Jéssica mudou totalmente meu corpo! Super recomendo!" — <span>Carla - Ouricuri-PE</span>
+      </div>
+      <div class="testimonial">
+        "A cada treino me sinto mais forte e confiante. Excelente acompanhamento. Ela arrasa!" — <span>Rafaela - Bodocó-PE</span>
+      </div>
+    </div>
+
+    <button class="btn" onclick="window.location.href='planos.html'">
+      💳 Ver Planos de Treino na Academia
+    </button>
+    <button class="btn secondary" onclick="window.location.href='index.html'">
+      ⬅ Voltar para o início
+    </button>
+
+    <footer>
+      © 2026 • Jéssica Personal
+    </footer>
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home - Jéssica Personal</title>
+  <link rel="icon" href="logo.ico">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <style>
+    * { 
+      margin: 0; 
+      padding: 0; 
+      box-sizing: border-box; 
+      font-family: 'Segoe UI', Arial, sans-serif; 
+    }
+
+    body {
+      background:
+        radial-gradient(circle at top right, rgba(255,120,180,0.25), transparent 40%),
+        radial-gradient(circle at bottom left, rgba(255,200,220,0.25), transparent 45%),
+        linear-gradient(135deg, #0a0a14, #12081a, #2a0a1f);
+      color: #fff;
+      min-height: 100vh;
+      position: relative;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      overflow-x: hidden;
+    }
+
+    /* animação de entrada (sensação de app) */
+    .container {
+      animation: fadeUp 0.7s ease forwards;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    @keyframes fadeUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .container {
+      max-width: 650px;
+      width: 100%;
+      padding: 28px;
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(14px);
+      border-radius: 22px;
+      border: 1px solid rgba(255,255,255,0.1);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+      position: relative;
+    }
+
+    h1 {
+      font-size: 40px;
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+
+    p {
+      opacity: 0.85;
+      margin-bottom: 16px;
+      font-size: 15px;
+    }
+
+    .benefits {
+      margin: 8px 0 20px;
+      font-size: 14px;
+      opacity: 0.9;
+      line-height: 1.6;
+    }
+
+    /* BOTÕES estilo app */
+    .btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      padding: 15px;
+      margin: 11px 0;
+      border-radius: 14px;
+      border: none;
+      font-weight: 600;
+      font-size: 16px;
+      cursor: pointer;
+      background: linear-gradient(135deg, #ff4fa3, #ff1f6d);
+      color: white;
+      transition: 0.25s;
+      box-shadow: 0 10px 30px rgba(255,79,163,0.35);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 15px 40px rgba(255,79,163,0.55);
+    }
+
+    /* efeito toque tipo app */
+    .btn:active {
+      transform: scale(0.96);
+      opacity: 0.9;
+    }
+
+    .btn.secondary {
+      background: linear-gradient(135deg, #ffd1e8, #ff9ac7);
+      color: #2a0a1f;
+      box-shadow: 0 10px 30px rgba(255,154,199,0.35);
+    }
+
+    .btn.secondary:hover {
+      box-shadow: 0 15px 40px rgba(255,154,199,0.6);
+    }
+
+    footer {
+      margin-top: 20px;
+      font-size: 12px;
+      opacity: 0.5;
+    }
+
+    /* INSTAGRAM */
+    .insta-wrapper {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 12px;
+    }
+
+    .insta-btn {
+      background: transparent;
+      border: 1.5px solid rgba(255,255,255,0.3);
+      color: white;
+      padding: 9px 16px;
+      font-size: 14px;
+      border-radius: 12px;
+      transition: 0.25s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .insta-btn i {
+      font-size: 16px;
+      color: #e1306c;
+    }
+
+    .insta-btn:hover {
+      background: rgba(255,255,255,0.08);
+      transform: scale(1.04);
+      border-color: #e1306c;
+    }
+
+    /* 📱 MOBILE PERFEITO */
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 30px;
+      }
+
+      p {
+        font-size: 14px;
+      }
+
+      .container {
+        padding: 22px;
+        border-radius: 18px;
+      }
+
+      .btn {
+        font-size: 15px;
+        padding: 14px;
+      }
+
+      .benefits {
+        font-size: 13px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+
+    <div class="insta-wrapper">
+      <button class="insta-btn" onclick="window.location.href='https://www.instagram.com/jessica_fagunde/'">
+        <i class="fa-brands fa-instagram"></i> @jessicafagunde
+      </button>
+    </div>
+
+    <h1>Transforme seu corpo 💖</h1>
+    <p>Escolha seu plano ideal e comece hoje mesmo sua evolução.</p>
+
+    <div class="benefits">
+      ✅ Treinos práticos e eficientes <br>
+      ✅ Para iniciantes e avançados <br>
+      ✅ Resultados reais em poucas semanas
+    </div>
+
+    <button class="btn" onclick="window.location.href='treino-casa.html'">
+      🏠 Treino em Casa 
+    </button>
+
+    <button class="btn secondary" onclick="window.location.href='treino na academia.html'">
+      🏋️ Treino na Academia 
+    </button>
+
+    <button class="btn secondary" onclick="window.location.href='planos.html'">
+      💳 Ver Todos os Planos
+    </button>
+
+    <button class="btn secondary" onclick="window.location.href='login.html'">
+      🔒 Área do Aluno(a)
+    </button>
+
+    <button class="btn secondary" onclick="window.location.href='https://wa.link/iv0wso'">
+      📲 Tirar dúvidas no WhatsApp
+    </button>
+
+    <footer>
+      © 2026 • Jéssica Personal • Todos os direitos reservados.
+    </footer>
+
+  </div>
+
+</body>
+</html>
