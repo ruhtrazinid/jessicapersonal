@@ -1,0 +1,39 @@
+Estrutura Oficial do Site:
+
+Página Inicial; index.html
+Opções;
+ 1-Treino em Casa 
+ 2-Treino na Academia
+ 3-Área do(a) Aluno(a)
+ 4-Falar no WhatsApp
+
+1-Treino em Casa; treinos.html
+Opções; 
+ 1-Perda de Peso
+ 2-Ganho de Massa
+
+  1-Perda de Peso; pagamento-peso.html
+    /Pagamento
+
+  2-Ganho de Massa; pagamento-massa.html
+    /Pagamento
+
+
+2- Treino na Academia; treino na academia.html
+ 1-Treino Básico
+ 2-Treino Intermediário
+ 3-Treino Premium
+
+  1-Treino Básico; pagamento-basico.html
+    /Pagamento
+
+  2-Treino Intermediário; pagamento-intermediario.html
+    /Pagamento
+  
+  3-Treino Premium; pagamento-premium.html
+    /Pagamento
+
+
+3- Área do Aluno; login.html
+ 1- Login>Aulas
+ 2- Aulas; aulas.html

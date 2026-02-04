@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login</title>
+<link rel="icon" href="logo.ico">
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+body {
+  background: linear-gradient(135deg, #0a0a14, #12081a, #2a0a1f);
+  color: #fff;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.login-box {
+  background: rgba(255,255,255,0.06);
+  backdrop-filter: blur(16px);
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,0.12);
+  padding: 30px;
+  width: 100%;
+  max-width: 360px;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+  animation: fadeUp .6s ease forwards;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+@keyframes fadeUp {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+h2 {
+  margin-bottom: 20px;
+}
+
+input {
+  width: 100%;
+  padding: 13px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.2);
+  background: rgba(255,255,255,0.08);
+  color: white;
+  margin-bottom: 12px;
+  outline: none;
+}
+
+input:focus {
+  border-color: #ff4fa3;
+  box-shadow: 0 0 0 3px rgba(255,79,163,0.15);
+}
+
+button {
+  width: 100%;
+  padding: 12px;
+  border-radius: 14px;
+  border: none;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  transition: .2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+button:active {
+  transform: scale(0.97);
+}
+
+.btn-login {
+  background: linear-gradient(135deg, #ff4fa3, #ff1f6d);
+  color: rgb(255, 255, 255);
+  margin-bottom: 10px;
+}
+
+.btn-register {
+  background: linear-gradient(135deg, #ff4fa3, #ff1f6d);
+  color: rgb(255, 255, 255);
+  margin-bottom: 10px;
+}
+
+.btn-google {
+  background: white;
+  color: #000;
+  border: 1px solid #ddd;
+}
+
+.btn-google img {
+  width: 18px;
+}
+
+.btn-back {
+  background: linear-gradient(135deg, #ff4fa3, #ff1f6d);
+  color: #ffffff;
+  margin-bottom: 20px;
+  size: 10px;
+}
+.toast {
+  position: fixed;
+  bottom: 25px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: rgba(20,20,30,0.95);
+  border-radius: 12px;
+  padding: 12px 16px;
+  font-size: 14px;
+  opacity: 0;
+  transition: .3s;
+  border: 1px solid rgba(255,255,255,0.15);
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.toast.success { border-left: 4px solid #22c55e; }
+.toast.error { border-left: 4px solid #ff4fa3; }
+</style>
+</head>
+<body>
+
+<div class="login-box">
+  <h2>🔒 Área do Aluno</h2>
+
+  <input type="email" id="email" placeholder="Email">
+  <input type="password" id="password" placeholder="Senha">
+
+  <button class="btn-login" onclick="login()">Entrar</button>
+  <button class="btn-register" onclick="cadastrar()">Cadastrar</button>
+  <button class="btn-back" onclick="window.location.href='index.html'">Voltar</button>
+  <button class="btn-google" onclick="loginGoogle()">
+    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg">
+    Entrar com Google
+  </button>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
+import { 
+  getAuth, 
+  signInWithEmailAndPassword, 
+  createUserWithEmailAndPassword,
+  GoogleAuthProvider,
+  signInWithPopup
+} from "https://www.gstatic.com/firebasejs/9.22.1/firebase-auth.js";
+
+import { 
+  getFirestore, 
+  doc, 
+  setDoc, 
+  getDoc 
+} from "https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAKLvhy6r6tLSMIEt-mZcfHWuiKHHibdcY",
+  authDomain: "meusiteteste1-7b880.firebaseapp.com",
+  projectId: "meusiteteste1-7b880",
+  storageBucket: "meusiteteste1-7b880.appspot.com",
+  messagingSenderId: "107598819774",
+  appId: "1:107598819774:web:1e369753c4b7908a6209ef"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const provider = new GoogleAuthProvider();
+
+// 👑 EMAIL ADMIN
+const ADMIN_EMAIL = "arthurdinizrede@gmail.com";
+
+// 🔔 TOAST
+function showToast(msg, type="error") {
+  const toast = document.getElementById("toast");
+  toast.innerText = msg;
+  toast.className = `toast show ${type}`;
+  setTimeout(() => toast.classList.remove("show"), 3000);
+}
+
+// 🔐 FUNÇÃO DE REDIRECIONAMENTO
+async function redirectUser(user) {
+  const docRef = doc(db, "users", user.uid);
+  const docSnap = await getDoc(docRef);
+
+  let role = "aluno";
+
+  if (docSnap.exists()) {
+    role = docSnap.data().role;
+  } else {
+    role = user.email === ADMIN_EMAIL ? "admin" : "aluno";
+    await setDoc(docRef, { email: user.email, role });
+  }
+
+  if (role === "admin") {
+    window.location.href = "admin.html";
+  } else {
+    window.location.href = "aulas.html";
+  }
+}
+
+// ✅ LOGIN NORMAL
+window.login = async function() {
+  const email = document.getElementById("email").value;
+  const senha = document.getElementById("password").value;
+
+  if (!email || !senha) {
+    showToast("Preencha email e senha");
+    return;
+  }
+
+  try {
+    const userCredential = await signInWithEmailAndPassword(auth, email, senha);
+    showToast("Login realizado!", "success");
+    setTimeout(() => redirectUser(userCredential.user), 700);
+  } catch {
+    showToast("Email ou senha inválidos");
+  }
+}
+
+// ✅ CADASTRO
+window.cadastrar = async function() {
+  const email = document.getElementById("email").value;
+  const senha = document.getElementById("password").value;
+
+  try {
+    const userCredential = await createUserWithEmailAndPassword(auth, email, senha);
+    const role = email === ADMIN_EMAIL ? "admin" : "aluno";
+
+    await setDoc(doc(db, "users", userCredential.user.uid), {
+      email,
+      role,
+      plano: "Básico",
+      criadoEm: new Date()
+    });
+
+    showToast("Cadastro realizado!", "success");
+  } catch {
+    showToast("Erro ao cadastrar");
+  }
+}
+
+// ✅ LOGIN GOOGLE
+window.loginGoogle = async function() {
+  try {
+    const result = await signInWithPopup(auth, provider);
+    showToast("Login Google OK!", "success");
+    setTimeout(() => redirectUser(result.user), 700);
+  } catch {
+    showToast("Erro no login Google");
+  }
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Painel Admin</title>
+<link rel="icon" href="logo.ico">
+
+<style>
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: linear-gradient(135deg, #0a0a14, #12081a, #2a0a1f);
+  color: white;
+  min-height: 100vh;
+}
+
+/* layout */
+.admin-layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* sidebar */
+.sidebar {
+  width: 240px;
+  background: rgba(255,255,255,0.05);
+  border-right: 1px solid rgba(255,255,255,0.1);
+  padding: 20px;
+  backdrop-filter: blur(12px);
+}
+
+.sidebar h2 {
+  font-size: 18px;
+  margin-bottom: 20px;
+}
+
+.menu-item {
+  padding: 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  margin-bottom: 8px;
+  transition: .2s;
+}
+
+.menu-item:hover {
+  background: rgba(255,255,255,0.1);
+}
+
+/* main */
+.main {
+  flex: 1;
+  padding: 25px;
+}
+
+/* header */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.logout {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.3);
+  color: white;
+  padding: 8px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.logout:hover {
+  background: rgba(255,255,255,0.1);
+}
+
+/* cards */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.card {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 16px;
+  padding: 18px;
+  backdrop-filter: blur(12px);
+}
+
+.card span {
+  font-size: 28px;
+  font-weight: bold;
+}
+
+/* search */
+.search-box {
+  margin-bottom: 12px;
+}
+
+.search-box input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.2);
+  background: rgba(255,255,255,0.08);
+  color: white;
+  outline: none;
+}
+
+/* table */
+.table-box {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 16px;
+  padding: 15px;
+  backdrop-filter: blur(12px);
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+th, td {
+  padding: 10px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+button.action {
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.btn-delete {
+  background: #ff1f6d;
+  color: white;
+}
+
+.btn-plan {
+  background: #ffd1e8;
+  color: #2a0a1f;
+}
+</style>
+</head>
+<body>
+
+<div class="admin-layout">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <h2>🛠 Admin</h2>
+    <div class="menu-item">📊 Dashboard</div>
+    <div class="menu-item">👤 Alunos</div>
+    <div class="menu-item">💳 Planos</div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="header">
+      <h2>Painel Administrativo</h2>
+      <button class="logout" onclick="logout()">Sair</button>
+    </div>
+
+    <div class="cards">
+      <div class="card">
+        <p>Total de alunos</p>
+        <span id="totalUsers">0</span>
+      </div>
+      <div class="card">
+        <p>Admins</p>
+        <span id="totalAdmins">0</span>
+      </div>
+    </div>
+
+    <div class="search-box">
+      <input type="text" id="search" placeholder="Buscar aluno por email..." onkeyup="filtrarUsuarios()">
+    </div>
+
+    <div class="table-box">
+      <table>
+        <thead>
+          <tr>
+            <th>Email</th>
+            <th>Plano</th>
+            <th>Role</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody id="userList"></tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
+import { 
+  getAuth, 
+  onAuthStateChanged, 
+  signOut 
+} from "https://www.gstatic.com/firebasejs/9.22.1/firebase-auth.js";
+import { 
+  getFirestore, 
+  collection, 
+  getDocs, 
+  updateDoc, 
+  doc 
+} from "https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAKLvhy6r6tLSMIEt-mZcfHWuiKHHibdcY",
+  authDomain: "meusiteteste1-7b880.firebaseapp.com",
+  projectId: "meusiteteste1-7b880",
+  storageBucket: "meusiteteste1-7b880.appspot.com",
+  messagingSenderId: "107598819774",
+  appId: "1:107598819774:web:1e369753c4b7908a6209ef"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+const ADMIN_EMAIL = "arthurdinizrede@gmail.com";
+let usuarios = [];
+
+// 🔐 proteger admin
+onAuthStateChanged(auth, async (user) => {
+  if (!user) {
+    window.location.href = "login.html";
+    return;
+  }
+
+  if (user.email !== ADMIN_EMAIL) {
+    window.location.href = "aulas.html";
+    return;
+  }
+
+  carregarUsuarios();
+});
+
+// 📥 carregar usuários
+async function carregarUsuarios() {
+  const snapshot = await getDocs(collection(db, "users"));
+  usuarios = [];
+  let admins = 0;
+
+  snapshot.forEach(docSnap => {
+    const data = docSnap.data();
+    usuarios.push({ id: docSnap.id, ...data });
+    if (data.role === "admin") admins++;
+  });
+
+  document.getElementById("totalUsers").innerText = usuarios.length;
+  document.getElementById("totalAdmins").innerText = admins;
+
+  renderTabela(usuarios);
+}
+
+// 🧾 render tabela
+function renderTabela(lista) {
+  const tbody = document.getElementById("userList");
+  tbody.innerHTML = "";
+
+  lista.forEach(u => {
+    tbody.innerHTML += `
+      <tr>
+        <td>${u.email}</td>
+        <td>${u.plano || "Básico"}</td>
+        <td>${u.role}</td>
+        <td>
+          <button class="action btn-plan" onclick="mudarPlano('${u.id}')">Plano</button>
+        </td>
+      </tr>
+    `;
+  });
+}
+
+// 🔍 filtro
+window.filtrarUsuarios = function() {
+  const termo = document.getElementById("search").value.toLowerCase();
+  const filtrados = usuarios.filter(u => u.email.toLowerCase().includes(termo));
+  renderTabela(filtrados);
+}
+
+// 💳 mudar plano
+window.mudarPlano = async function(id) {
+  const plano = prompt("Digite o plano: Básico / Intermediário / Premium");
+  if (!plano) return;
+
+  await updateDoc(doc(db, "users", id), { plano });
+  carregarUsuarios();
+}
+
+// 👑 tornar admin
+window.tornarAdmin = async function(id) {
+  await updateDoc(doc(db, "users", id), { role: "admin" });
+  carregarUsuarios();
+}
+
+// 🚪 logout
+window.logout = function() {
+  signOut(auth).then(() => window.location.href = "login.html");
+}
+</script>
+
+</body>
+</html>
