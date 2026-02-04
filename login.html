@@ -24,6 +24,32 @@ body {
     overflow-x: hidden;
 }
 
+/* BOTÃO VOLTAR GLOBAL */
+.btn-back-global {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    padding: 8px 15px;
+    border-radius: 10px;
+    font-size: 13px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    z-index: 1000;
+    transition: 0.3s;
+    text-decoration: none;
+    width: auto;
+}
+
+.btn-back-global:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: #ff4fa3;
+}
+
 /* CONTAINER PRINCIPAL */
 .container {
     background: rgba(255,255,255,0.06);
@@ -34,11 +60,10 @@ body {
     overflow: hidden;
     width: 768px;
     max-width: 95vw;
-    min-height: 550px;
+    min-height: 580px;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
 }
 
-/* FORMULÁRIOS */
 .form-container {
     position: absolute;
     top: 0;
@@ -69,7 +94,7 @@ body {
     50%, 100% { opacity: 1; z-index: 5; }
 }
 
-/* OVERLAY (PC) */
+/* OVERLAY */
 .overlay-container {
     position: absolute;
     top: 0;
@@ -114,7 +139,7 @@ body {
 .overlay-right { right: 0; transform: translateX(0); }
 .container.right-panel-active .overlay-right { transform: translateX(20%); }
 
-/* ELEMENTOS */
+/* INPUTS E BOTÕES */
 h2 { margin-bottom: 15px; font-size: 24px; }
 p { font-size: 14px; line-height: 20px; margin: 20px 0 30px; }
 
@@ -146,64 +171,29 @@ button {
 .btn-google { background: white; color: #000; display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 15px; }
 .btn-google img { width: 18px; }
 
-/* MOBILE SWITCH BUTTON (Aparece só no celular) */
 .mobile-only { display: none; }
 
-/* 📱 RESPONSIVIDADE (MOBILE) */
+/* RESPONSIVIDADE */
 @media (max-width: 768px) {
-    .container {
-        min-height: 580px;
-        width: 90vw;
-    }
-
-    .overlay-container { display: none; } /* Esconde o painel deslizante */
-
-    .form-container {
-        width: 100%;
-        padding: 0 20px;
-    }
-
-    /* Ajuste para alternar entre login e cadastro sem o overlay */
-    .container.right-panel-active .sign-in-container {
-        display: none;
-    }
-    
-    .container:not(.right-panel-active) .sign-up-container {
-        display: none;
-    }
-
-    .container.right-panel-active .sign-up-container {
-        transform: none;
-        width: 100%;
-        left: 0;
-        opacity: 1;
-    }
-
-    .mobile-only {
-        display: block;
-        margin-top: 20px;
-        background: transparent;
-        color: #ff4fa3;
-        font-size: 13px;
-        border-bottom: 1px solid #ff4fa3;
-        border-radius: 0;
-        width: auto;
-        padding: 5px;
-    }
+    .container { min-height: 600px; width: 92vw; }
+    .overlay-container { display: none; }
+    .form-container { width: 100%; padding: 0 20px; }
+    .container.right-panel-active .sign-in-container { display: none; }
+    .container:not(.right-panel-active) .sign-up-container { display: none; }
+    .container.right-panel-active .sign-up-container { transform: none; width: 100%; left: 0; opacity: 1; }
+    .mobile-only { display: block; margin-top: 20px; background: transparent; color: #ff4fa3; font-size: 13px; border-bottom: 1px solid #ff4fa3; border-radius: 0; width: auto; padding: 5px; }
+    .btn-back-global { top: 10px; left: 10px; padding: 6px 10px; font-size: 12px; }
 }
 
-/* TOAST */
-.toast {
-    position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%) translateY(20px);
-    background: rgba(20,20,30,0.95); border-radius: 12px; padding: 12px 16px;
-    font-size: 14px; opacity: 0; transition: .3s; border: 1px solid rgba(255,255,255,0.15); z-index: 10000;
-}
+.toast { position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%) translateY(20px); background: rgba(20,20,30,0.95); border-radius: 12px; padding: 12px 16px; font-size: 14px; opacity: 0; transition: .3s; border: 1px solid rgba(255,255,255,0.15); z-index: 10000; }
 .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-.toast.success { border-left: 4px solid #22c55e; }
-.toast.error { border-left: 4px solid #ff4fa3; }
 </style>
 </head>
 <body>
+
+<a href="index.html" class="btn-back-global">
+    <span>←</span> Voltar ao Início
+</a>
 
 <div class="container" id="container">
     
@@ -247,6 +237,7 @@ button {
 <div id="toast" class="toast"></div>
 
 <script type="module">
+// [Mantenha todo o código JavaScript do Firebase enviado anteriormente aqui]
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-auth.js";
 import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js";
@@ -267,12 +258,9 @@ const provider = new GoogleAuthProvider();
 const ADMIN_EMAIL = "arthurdinizrede@gmail.com";
 
 const container = document.getElementById('container');
-
-// Troca no PC
 document.getElementById('signUp').addEventListener('click', () => container.classList.add("right-panel-active"));
 document.getElementById('signIn').addEventListener('click', () => container.classList.remove("right-panel-active"));
 
-// Troca no Mobile
 window.toggleMobile = (isSignUp) => {
     if(isSignUp) container.classList.add("right-panel-active");
     else container.classList.remove("right-panel-active");
