@@ -3,269 +3,356 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Login</title>
+<title>Login & Cadastro</title>
 <link rel="icon" href="logo.ico">
 
 <style>
 * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: 'Segoe UI', Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Arial, sans-serif;
 }
 
 body {
-  background: linear-gradient(135deg, #0a0a14, #12081a, #2a0a1f);
-  color: #fff;
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+    background: linear-gradient(135deg, #0a0a14, #12081a, #2a0a1f);
+    color: #fff;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
 }
 
-.login-box {
-  background: rgba(255,255,255,0.06);
-  backdrop-filter: blur(16px);
-  border-radius: 20px;
-  border: 1px solid rgba(255,255,255,0.12);
-  padding: 30px;
-  width: 100%;
-  max-width: 360px;
-  text-align: center;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.6);
-  animation: fadeUp .6s ease forwards;
-  opacity: 0;
-  transform: translateY(20px);
+/* CONTAINER PRINCIPAL */
+.container {
+    background: rgba(255,255,255,0.06);
+    backdrop-filter: blur(16px);
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.12);
+    position: relative;
+    overflow: hidden;
+    width: 768px;
+    max-width: 95vw;
+    min-height: 550px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
 }
 
-@keyframes fadeUp {
-  to { opacity: 1; transform: translateY(0); }
+/* FORMULÁRIOS */
+.form-container {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    transition: all 0.6s ease-in-out;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 0 40px;
+    text-align: center;
+    width: 50%; /* Garante que ocupe metade do container */
 }
 
-h2 {
-  margin-bottom: 20px;
+/* Lado do Login */
+.sign-in-container {
+    left: 0;
+    z-index: 2;
+    opacity: 1;
 }
+
+/* Lado do Cadastro */
+.sign-up-container {
+    left: 0;
+    opacity: 0;
+    z-index: 1;
+}
+
+/* Movimentação quando ativo */
+.container.right-panel-active .sign-in-container {
+    transform: translateX(100%);
+    opacity: 0;
+}
+
+.container.right-panel-active .sign-up-container {
+    transform: translateX(100%);
+    opacity: 1;
+    z-index: 5;
+    animation: show 0.6s;
+}
+
+@keyframes show {
+    0%, 49.99% { opacity: 0; z-index: 1; }
+    50%, 100% { opacity: 1; z-index: 5; }
+}
+
+/* OVERLAY */
+.overlay-container {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 50%;
+    height: 100%;
+    overflow: hidden;
+    transition: transform 0.6s ease-in-out;
+    z-index: 100;
+}
+
+.container.right-panel-active .overlay-container {
+    transform: translateX(-100%);
+}
+
+.overlay {
+    background: linear-gradient(135deg, #ff4fa3, #ff1f6d);
+    color: #FFFFFF;
+    position: relative;
+    left: -100%;
+    height: 100%;
+    width: 200%;
+    transform: translateX(0);
+    transition: transform 0.6s ease-in-out;
+}
+
+.container.right-panel-active .overlay {
+    transform: translateX(50%);
+}
+
+.overlay-panel {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 0 40px;
+    top: 0;
+    height: 100%;
+    width: 50%;
+    transition: transform 0.6s ease-in-out;
+}
+
+.overlay-left { transform: translateX(-20%); }
+.container.right-panel-active .overlay-left { transform: translateX(0); }
+
+.overlay-right { right: 0; transform: translateX(0); }
+.container.right-panel-active .overlay-right { transform: translateX(20%); }
+
+/* ESTILIZAÇÃO DOS ELEMENTOS */
+h2 { margin-bottom: 15px; font-size: 24px; }
+p { font-size: 14px; line-height: 20px; margin: 20px 0 30px; }
 
 input {
-  width: 100%;
-  padding: 13px;
-  border-radius: 12px;
-  border: 1px solid rgba(255,255,255,0.2);
-  background: rgba(255,255,255,0.08);
-  color: white;
-  margin-bottom: 12px;
-  outline: none;
+    width: 100%;
+    padding: 12px 15px;
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.2);
+    background: rgba(255,255,255,0.08);
+    color: white;
+    margin-bottom: 10px;
+    outline: none;
+    font-size: 14px;
 }
 
 input:focus {
-  border-color: #ff4fa3;
-  box-shadow: 0 0 0 3px rgba(255,79,163,0.15);
+    border-color: #ff4fa3;
+    box-shadow: 0 0 0 3px rgba(255,79,163,0.15);
 }
 
 button {
-  width: 100%;
-  padding: 12px;
-  border-radius: 14px;
-  border: none;
-  font-weight: 600;
-  font-size: 15px;
-  cursor: pointer;
-  transition: .2s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
+    width: 100%;
+    padding: 12px;
+    border-radius: 12px;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 80ms ease-in;
+    margin-top: 5px;
+    text-transform: uppercase;
 }
 
-button:active {
-  transform: scale(0.97);
+button:active { transform: scale(0.95); }
+
+.btn-login, .btn-register {
+    background: linear-gradient(135deg, #ff4fa3, #ff1f6d);
+    color: #fff;
 }
 
-.btn-login {
-  background: linear-gradient(135deg, #ff4fa3, #ff1f6d);
-  color: rgb(255, 255, 255);
-  margin-bottom: 10px;
-}
-
-.btn-register {
-  background: linear-gradient(135deg, #ff4fa3, #ff1f6d);
-  color: rgb(255, 255, 255);
-  margin-bottom: 10px;
+.btn-ghost {
+    background: transparent;
+    border: 1px solid #ffffff;
+    width: auto;
+    padding: 10px 40px;
 }
 
 .btn-google {
-  background: white;
-  color: #000;
-  border: 1px solid #ddd;
+    background: white;
+    color: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 15px;
+}
+.btn-google img { width: 18px; }
+
+.btn-ghost:hover {  
+    color: #ffffff;
+    background: rgba(255,255,255,0.1);
+    border-color: #ff4fa3;
+    display: flex;
 }
 
-.btn-google img {
-  width: 18px;
-}
-
-.btn-back {
-  background: linear-gradient(135deg, #ffffff, #ff1f6d);
-  color: #ffffff;
-  margin-bottom: 20px;
-  size: 10px;
-}
+/* TOAST */
 .toast {
-  position: fixed;
-  bottom: 25px;
-  left: 50%;
-  transform: translateX(-50%) translateY(20px);
-  background: rgba(20,20,30,0.95);
-  border-radius: 12px;
-  padding: 12px 16px;
-  font-size: 14px;
-  opacity: 0;
-  transition: .3s;
-  border: 1px solid rgba(255,255,255,0.15);
+    position: fixed;
+    bottom: 25px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: rgba(20,20,30,0.95);
+    border-radius: 12px;
+    padding: 12px 16px;
+    font-size: 14px;
+    opacity: 0;
+    transition: .3s;
+    border: 1px solid rgba(255,255,255,0.15);
+    z-index: 10000;
 }
-
-.toast.show {
-  opacity: 1;
-  transform: translateX(-50%) translateY(0);
-}
-
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 .toast.success { border-left: 4px solid #22c55e; }
 .toast.error { border-left: 4px solid #ff4fa3; }
 </style>
 </head>
 <body>
 
-<div class="login-box">
-  <h2>🔒 Área do Aluno</h2>
+<div class="container" id="container">
+    
+    <div class="form-container sign-up-container">
+        <h2>Criar Conta</h2>
+        <input type="text" id="reg-nome" placeholder="Nome">
+        <input type="text" id="reg-sobrenome" placeholder="Sobrenome">
+        <input type="email" id="reg-email" placeholder="Email">
+        <input type="password" id="reg-password" placeholder="Senha">
+        <button class="btn-register" onclick="cadastrar()">Cadastrar</button>
+    </div>
 
-  <input type="email" id="email" placeholder="Email">
-  <input type="password" id="password" placeholder="Senha">
+    <div class="form-container sign-in-container">
+        <h2>🔒 Área do Aluno</h2>
+        <input type="email" id="email" placeholder="Email">
+        <input type="password" id="password" placeholder="Senha">
+        <button class="btn-login" onclick="login()">Entrar</button>
+        <button class="btn-google" onclick="loginGoogle()">
+            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg">
+            Google
+        </button>
+    </div>
 
-  <button class="btn-login" onclick="login()">Entrar</button>
-  <button class="btn-register" onclick="cadastrar()">Cadastrar</button>
-  <button class="btn-back" onclick="window.location.href='index.html'">Voltar</button>
-  <button class="btn-google" onclick="loginGoogle()">
-    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg">
-    Entrar com Google
-  </button>
+    <div class="overlay-container">
+        <div class="overlay">
+            <div class="overlay-panel overlay-left">
+                <h2>Bem-vindo!</h2>
+                <p>Mantenha-se conectado com a gente para treinar melhor.</p>
+                <button class="btn-ghost" id="signIn">Ir para Login</button>
+            </div>
+            <div class="overlay-panel overlay-right">
+                <h2>Olá, Seja Bem-vindo(a)!</h2>
+                <p>Insira seus dados pessoais e comece sua jornada conosco.</p>
+                <button class="btn-ghost" id="signUp">Ir para Cadastro</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div id="toast" class="toast"></div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
-import { 
-  getAuth, 
-  signInWithEmailAndPassword, 
-  createUserWithEmailAndPassword,
-  GoogleAuthProvider,
-  signInWithPopup
-} from "https://www.gstatic.com/firebasejs/9.22.1/firebase-auth.js";
-
-import { 
-  getFirestore, 
-  doc, 
-  setDoc, 
-  getDoc 
-} from "https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js";
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-auth.js";
+import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAKLvhy6r6tLSMIEt-mZcfHWuiKHHibdcY",
-  authDomain: "meusiteteste1-7b880.firebaseapp.com",
-  projectId: "meusiteteste1-7b880",
-  storageBucket: "meusiteteste1-7b880.appspot.com",
-  messagingSenderId: "107598819774",
-  appId: "1:107598819774:web:1e369753c4b7908a6209ef"
+    apiKey: "AIzaSyAKLvhy6r6tLSMIEt-mZcfHWuiKHHibdcY",
+    authDomain: "meusiteteste1-7b880.firebaseapp.com",
+    projectId: "meusiteteste1-7b880",
+    storageBucket: "meusiteteste1-7b880.appspot.com",
+    messagingSenderId: "107598819774",
+    appId: "1:107598819774:web:1e369753c4b7908a6209ef"
 };
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 const provider = new GoogleAuthProvider();
-
-// 👑 EMAIL ADMIN
 const ADMIN_EMAIL = "arthurdinizrede@gmail.com";
 
-// 🔔 TOAST
-function showToast(msg, type="error") {
-  const toast = document.getElementById("toast");
-  toast.innerText = msg;
-  toast.className = `toast show ${type}`;
-  setTimeout(() => toast.classList.remove("show"), 3000);
+// Lógica de Troca de Painel
+const signUpButton = document.getElementById('signUp');
+const signInButton = document.getElementById('signIn');
+const container = document.getElementById('container');
+
+signUpButton.addEventListener('click', () => container.classList.add("right-panel-active"));
+signInButton.addEventListener('click', () => container.classList.remove("right-panel-active"));
+
+window.showToast = function(msg, type="error") {
+    const toast = document.getElementById("toast");
+    toast.innerText = msg;
+    toast.className = `toast show ${type}`;
+    setTimeout(() => toast.classList.remove("show"), 3000);
 }
 
-// 🔐 FUNÇÃO DE REDIRECIONAMENTO
 async function redirectUser(user) {
-  const docRef = doc(db, "users", user.uid);
-  const docSnap = await getDoc(docRef);
-
-  let role = "aluno";
-
-  if (docSnap.exists()) {
-    role = docSnap.data().role;
-  } else {
-    role = user.email === ADMIN_EMAIL ? "admin" : "aluno";
-    await setDoc(docRef, { email: user.email, role });
-  }
-
-  if (role === "admin") {
-    window.location.href = "admin.html";
-  } else {
-    window.location.href = "aulas.html";
-  }
+    const docRef = doc(db, "users", user.uid);
+    const docSnap = await getDoc(docRef);
+    let role = "aluno";
+    if (docSnap.exists()) {
+        role = docSnap.data().role;
+    } else {
+        role = user.email === ADMIN_EMAIL ? "admin" : "aluno";
+        await setDoc(docRef, { email: user.email, role, plano: "Básico" });
+    }
+    window.location.href = role === "admin" ? "admin.html" : "aulas.html";
 }
 
-// ✅ LOGIN NORMAL
 window.login = async function() {
-  const email = document.getElementById("email").value;
-  const senha = document.getElementById("password").value;
-
-  if (!email || !senha) {
-    showToast("Preencha email e senha");
-    return;
-  }
-
-  try {
-    const userCredential = await signInWithEmailAndPassword(auth, email, senha);
-    showToast("Login realizado!", "success");
-    setTimeout(() => redirectUser(userCredential.user), 700);
-  } catch {
-    showToast("Email ou senha inválidos");
-  }
+    const email = document.getElementById("email").value;
+    const senha = document.getElementById("password").value;
+    if (!email || !senha) { showToast("Preencha email e senha"); return; }
+    try {
+        const userCredential = await signInWithEmailAndPassword(auth, email, senha);
+        showToast("Login realizado!", "success");
+        setTimeout(() => redirectUser(userCredential.user), 700);
+    } catch {
+        showToast("Email ou senha inválidos");
+    }
 }
 
-// ✅ CADASTRO
 window.cadastrar = async function() {
-  const email = document.getElementById("email").value;
-  const senha = document.getElementById("password").value;
-
-  try {
-    const userCredential = await createUserWithEmailAndPassword(auth, email, senha);
-    const role = email === ADMIN_EMAIL ? "admin" : "aluno";
-
-    await setDoc(doc(db, "users", userCredential.user.uid), {
-      email,
-      role,
-      plano: "Básico",
-      criadoEm: new Date()
-    });
-
-    showToast("Cadastro realizado!", "success");
-  } catch {
-    showToast("Erro ao cadastrar");
-  }
+    const nome = document.getElementById("reg-nome").value;
+    const sobrenome = document.getElementById("reg-sobrenome").value;
+    const email = document.getElementById("reg-email").value;
+    const senha = document.getElementById("reg-password").value;
+    
+    if(!nome || !email || !senha) { showToast("Preencha os campos obrigatórios"); return; }
+    
+    try {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, senha);
+        const role = email === ADMIN_EMAIL ? "admin" : "aluno";
+        await setDoc(doc(db, "users", userCredential.user.uid), {
+            nome, sobrenome, email, role, plano: "Básico", criadoEm: new Date()
+        });
+        showToast("Cadastro realizado!", "success");
+        setTimeout(() => redirectUser(userCredential.user), 1000);
+    } catch (error) {
+        showToast("Erro: " + error.message);
+    }
 }
 
-// ✅ LOGIN GOOGLE
 window.loginGoogle = async function() {
-  try {
-    const result = await signInWithPopup(auth, provider);
-    showToast("Login Google OK!", "success");
-    setTimeout(() => redirectUser(result.user), 700);
-  } catch {
-    showToast("Erro no login Google");
-  }
+    try {
+        const result = await signInWithPopup(auth, provider);
+        showToast("Login Google OK!", "success");
+        setTimeout(() => redirectUser(result.user), 700);
+    } catch {
+        showToast("Erro no login Google");
+    }
 }
 </script>
-
 </body>
 </html>

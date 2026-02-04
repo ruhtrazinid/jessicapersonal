@@ -118,6 +118,7 @@ body {
   padding: 15px;
   backdrop-filter: blur(12px);
   overflow-x: auto;
+  margin-bottom: 25px;
 }
 
 table {
@@ -137,6 +138,7 @@ button.action {
   border: none;
   cursor: pointer;
   font-size: 12px;
+  margin-right: 5px;
 }
 
 .btn-delete {
@@ -148,13 +150,46 @@ button.action {
   background: #ffd1e8;
   color: #2a0a1f;
 }
+
+/* Formulário de Treino */
+.admin-container {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 16px;
+  padding: 20px;
+  backdrop-filter: blur(12px);
+}
+
+#training-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+#training-form input, #training-form textarea {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.2);
+  padding: 12px;
+  border-radius: 10px;
+  color: white;
+  outline: none;
+}
+
+#training-form button {
+  background: #ff1f6d;
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: bold;
+}
 </style>
 </head>
 <body>
 
 <div class="admin-layout">
 
-  <!-- SIDEBAR -->
   <div class="sidebar">
     <h2>🛠 Admin</h2>
     <div class="menu-item">📊 Dashboard</div>
@@ -162,7 +197,6 @@ button.action {
     <div class="menu-item">💳 Planos</div>
   </div>
 
-  <!-- MAIN -->
   <div class="main">
     <div class="header">
       <h2>Painel Administrativo</h2>
@@ -197,23 +231,30 @@ button.action {
         <tbody id="userList"></tbody>
       </table>
     </div>
-  </div>
 
+    <div class="admin-container">
+      <h2>Postar Novo Treino</h2>
+      <form id="training-form">
+          <input type="text" id="training-title" placeholder="Título (ex: Treino de Peito)" required>
+          <textarea id="training-desc" placeholder="Exercícios..." rows="5" required></textarea>
+          <input type="text" id="training-video" placeholder="Link do vídeo">
+          <button type="submit">Publicar Treino para Alunos</button>
+      </form>
+    </div>
+  </div>
 </div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
-import { 
-  getAuth, 
-  onAuthStateChanged, 
-  signOut 
-} from "https://www.gstatic.com/firebasejs/9.22.1/firebase-auth.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-auth.js";
 import { 
   getFirestore, 
   collection, 
   getDocs, 
   updateDoc, 
-  doc 
+  doc, 
+  setDoc, 
+  deleteDoc // Importado para permitir exclusão
 } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -232,85 +273,93 @@ const db = getFirestore(app);
 const ADMIN_EMAIL = "arthurdinizrede@gmail.com";
 let usuarios = [];
 
-// 🔐 proteger admin
 onAuthStateChanged(auth, async (user) => {
-  if (!user) {
+  if (!user || user.email !== ADMIN_EMAIL) {
     window.location.href = "login.html";
     return;
   }
-
-  if (user.email !== ADMIN_EMAIL) {
-    window.location.href = "aulas.html";
-    return;
-  }
-
   carregarUsuarios();
 });
 
-// 📥 carregar usuários
 async function carregarUsuarios() {
   const snapshot = await getDocs(collection(db, "users"));
   usuarios = [];
   let admins = 0;
-
   snapshot.forEach(docSnap => {
     const data = docSnap.data();
     usuarios.push({ id: docSnap.id, ...data });
     if (data.role === "admin") admins++;
   });
-
   document.getElementById("totalUsers").innerText = usuarios.length;
   document.getElementById("totalAdmins").innerText = admins;
-
   renderTabela(usuarios);
 }
 
-// 🧾 render tabela
 function renderTabela(lista) {
   const tbody = document.getElementById("userList");
   tbody.innerHTML = "";
-
   lista.forEach(u => {
     tbody.innerHTML += `
       <tr>
         <td>${u.email}</td>
         <td>${u.plano || "Básico"}</td>
-        <td>${u.role}</td>
+        <td>${u.role || "user"}</td>
         <td>
           <button class="action btn-plan" onclick="mudarPlano('${u.id}')">Plano</button>
+          <button class="action btn-delete" onclick="excluirUsuario('${u.id}', '${u.email}')">Excluir</button>
         </td>
       </tr>
     `;
   });
 }
 
-// 🔍 filtro
+// 🗑️ FUNÇÃO PARA EXCLUIR ALUNO
+window.excluirUsuario = async function(id, email) {
+  if (confirm(`Tem certeza que deseja remover o acesso de ${email}?`)) {
+    try {
+      await deleteDoc(doc(db, "users", id));
+      alert("Registro do aluno removido com sucesso!");
+      carregarUsuarios(); // Recarrega a lista
+    } catch (error) {
+      alert("Erro ao excluir: " + error.message);
+    }
+  }
+}
+
+// 💳 MUDAR PLANO
+window.mudarPlano = async function(id) {
+  const plano = prompt("Digite o plano: Básico / Intermediário / Premium");
+  if (!plano) return;
+  await updateDoc(doc(db, "users", id), { plano });
+  carregarUsuarios();
+}
+
+// 📝 POSTAR TREINO
+const trainingForm = document.getElementById('training-form');
+trainingForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const titulo = document.getElementById('training-title').value;
+    const descricao = document.getElementById('training-desc').value;
+    const video = document.getElementById('training-video').value;
+    try {
+        await setDoc(doc(db, "treinos", "diario"), {
+            titulo, descricao, video, dataPostagem: new Date()
+        });
+        alert("Treino publicado!");
+        trainingForm.reset();
+    } catch (error) {
+        alert("Erro: " + error.message);
+    }
+});
+
 window.filtrarUsuarios = function() {
   const termo = document.getElementById("search").value.toLowerCase();
   const filtrados = usuarios.filter(u => u.email.toLowerCase().includes(termo));
   renderTabela(filtrados);
 }
 
-// 💳 mudar plano
-window.mudarPlano = async function(id) {
-  const plano = prompt("Digite o plano: Básico / Intermediário / Premium");
-  if (!plano) return;
+window.logout = () => signOut(auth).then(() => window.location.href = "login.html");
 
-  await updateDoc(doc(db, "users", id), { plano });
-  carregarUsuarios();
-}
-
-// 👑 tornar admin
-window.tornarAdmin = async function(id) {
-  await updateDoc(doc(db, "users", id), { role: "admin" });
-  carregarUsuarios();
-}
-
-// 🚪 logout
-window.logout = function() {
-  signOut(auth).then(() => window.location.href = "login.html");
-}
 </script>
-
 </body>
 </html>

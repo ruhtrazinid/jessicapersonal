@@ -7,9 +7,7 @@
 <link rel="icon" href="logo.ico">
 
 <style>
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
 body {
   margin: 0;
@@ -60,14 +58,8 @@ body {
   z-index: 1000;
 }
 
-.sidebar.active {
-  transform: translateX(0);
-}
-
-.sidebar h3 {
-  margin-bottom: 20px;
-  font-size: 18px;
-}
+.sidebar.active { transform: translateX(0); }
+.sidebar h3 { margin-bottom: 20px; font-size: 18px; }
 
 .menu-item {
   padding: 12px 14px;
@@ -78,9 +70,7 @@ body {
   background: rgba(255,255,255,0.04);
 }
 
-.menu-item:hover {
-  background: rgba(255,79,163,0.25);
-}
+.menu-item:hover { background: rgba(255,79,163,0.25); }
 
 .logout {
   margin-top: 20px;
@@ -104,10 +94,7 @@ body {
   z-index: 900;
 }
 
-.overlay.active {
-  opacity: 1;
-  pointer-events: all;
-}
+.overlay.active { opacity: 1; pointer-events: all; }
 
 /* CONTEÚDO */
 .dashboard {
@@ -119,13 +106,11 @@ body {
   transform: translateY(20px);
 }
 
-@keyframes fadeUp {
-  to { opacity: 1; transform: translateY(0); }
-}
+@keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
 
 .cards {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Aumentei um pouco para o treino caber melhor */
   gap: 18px;
 }
 
@@ -143,56 +128,57 @@ body {
   box-shadow: 0 20px 60px rgba(255,79,163,0.3);
 }
 
-.card h3 {
-  margin-bottom: 10px;
-  font-size: 18px;
-}
+.card h3 { margin-bottom: 10px; font-size: 18px; color: #ff4fa3; }
+.card p { font-size: 14px; opacity: 0.9; line-height: 1.5; white-space: pre-wrap; }
 
-.card p {
-  font-size: 13px;
-  opacity: 0.8;
+/* Botão de vídeo estilizado */
+.video-link {
+    display: inline-block;
+    margin-top: 15px;
+    color: #ff4fa3;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 13px;
+    border: 1px solid #ff4fa3;
+    padding: 5px 10px;
+    border-radius: 8px;
 }
 </style>
 </head>
 <body>
 
-<!-- MENU LATERAL -->
 <div class="sidebar" id="sidebar">
   <h3>📚 Menu</h3>
-
   <div class="menu-item">🏋️ Meu Treino</div>
   <div class="menu-item">💳 Meu Plano</div>
   <div class="menu-item">📊 Evolução</div>
   <div class="menu-item">💬 Suporte</div>
-
   <button class="logout" onclick="logout()">Sair</button>
 </div>
 
-<!-- OVERLAY -->
 <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
 
-<!-- TOPO -->
 <div class="topbar">
   <button class="menu-btn" onclick="toggleMenu()">☰</button>
-  <div class="user-info" id="userName">👋 Olá, aluno(a)</div>
+  <div class="user-info" id="userName">👋 Carregando...</div>
 </div>
 
-<!-- CONTEÚDO -->
 <div class="dashboard">
   <div class="cards">
-    <div class="card">
-      <h3>🏋️ Meu Treino</h3>
-      <p>Acesse seus treinos personalizados.</p>
+    <div class="card" id="cardTreino">
+      <h3 id="treinoTitulo">🏋️ Aguardando Treino...</h3>
+      <p id="treinoDesc">O seu treinador ainda não postou o treino de hoje.</p>
+      <a href="#" id="treinoVideo" target="_blank" class="video-link" style="display: none;">🎥 Ver Demonstração</a>
     </div>
 
     <div class="card">
       <h3>💳 Meu Plano</h3>
-      <p>Veja informações do seu plano.</p>
+      <p id="userPlano">Verificando plano...</p>
     </div>
 
     <div class="card">
       <h3>📅 Evolução</h3>
-      <p>Acompanhe seu progresso.</p>
+      <p>Acompanhe seu progresso e medidas aqui.</p>
     </div>
   </div>
 </div>
@@ -200,6 +186,7 @@ body {
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-auth.js";
+import { getFirestore, doc, getDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAKLvhy6r6tLSMIEt-mZcfHWuiKHHibdcY",
@@ -212,15 +199,47 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+const db = getFirestore(app);
 
-onAuthStateChanged(auth, (user) => {
+// 🔐 Monitorar estado do usuário e buscar dados extras
+onAuthStateChanged(auth, async (user) => {
   if (!user) {
     window.location.href = "login.html";
   } else {
-    document.getElementById("userName").innerText = "👋 Olá, " + user.email;
+    // 1. Buscar Nome e Plano do Aluno no Firestore
+    const userRef = doc(db, "users", user.uid);
+    try {
+        const userSnap = await getDoc(userRef);
+        if (userSnap.exists()) {
+            const data = userSnap.data();
+            document.getElementById("userName").innerText = "👋 Olá, " + (data.nome || "Aluno");
+            document.getElementById("userPlano").innerText = "Plano atual: " + (data.plano || "Básico");
+        } else {
+            document.getElementById("userName").innerText = "👋 Olá, " + user.email;
+        }
+    } catch (e) {
+        console.error("Erro ao buscar dados do usuário");
+    }
+
+    // 2. Ouvir o Treino em Tempo Real (Snapshot)
+    const treinoRef = doc(db, "treinos", "diario");
+    onSnapshot(treinoRef, (docSnap) => {
+        if (docSnap.exists()) {
+            const treino = docSnap.data();
+            document.getElementById("treinoTitulo").innerText = "🏋️ " + treino.titulo;
+            document.getElementById("treinoDesc").innerText = treino.descricao;
+            
+            const btnVideo = document.getElementById("treinoVideo");
+            if (treino.video) {
+                btnVideo.href = treino.video;
+                btnVideo.style.display = "inline-block";
+            } else {
+                btnVideo.style.display = "none";
+            }
+        }
+    });
   }
 });
-
 
 window.logout = function() {
   signOut(auth).then(() => {
@@ -228,7 +247,6 @@ window.logout = function() {
   });
 }
 
-/* MENU LATERAL */
 window.toggleMenu = function() {
   document.getElementById("sidebar").classList.toggle("active");
   document.getElementById("overlay").classList.toggle("active");
