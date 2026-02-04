@@ -21,7 +21,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    overflow: hidden;
+    overflow-x: hidden;
 }
 
 /* CONTAINER PRINCIPAL */
@@ -50,29 +50,13 @@ body {
     align-items: center;
     padding: 0 40px;
     text-align: center;
-    width: 50%; /* Garante que ocupe metade do container */
+    width: 50%;
 }
 
-/* Lado do Login */
-.sign-in-container {
-    left: 0;
-    z-index: 2;
-    opacity: 1;
-}
+.sign-in-container { left: 0; z-index: 2; opacity: 1; }
+.sign-up-container { left: 0; opacity: 0; z-index: 1; }
 
-/* Lado do Cadastro */
-.sign-up-container {
-    left: 0;
-    opacity: 0;
-    z-index: 1;
-}
-
-/* Movimentação quando ativo */
-.container.right-panel-active .sign-in-container {
-    transform: translateX(100%);
-    opacity: 0;
-}
-
+.container.right-panel-active .sign-in-container { transform: translateX(100%); opacity: 0; }
 .container.right-panel-active .sign-up-container {
     transform: translateX(100%);
     opacity: 1;
@@ -85,7 +69,7 @@ body {
     50%, 100% { opacity: 1; z-index: 5; }
 }
 
-/* OVERLAY */
+/* OVERLAY (PC) */
 .overlay-container {
     position: absolute;
     top: 0;
@@ -97,9 +81,7 @@ body {
     z-index: 100;
 }
 
-.container.right-panel-active .overlay-container {
-    transform: translateX(-100%);
-}
+.container.right-panel-active .overlay-container { transform: translateX(-100%); }
 
 .overlay {
     background: linear-gradient(135deg, #ff4fa3, #ff1f6d);
@@ -112,9 +94,7 @@ body {
     transition: transform 0.6s ease-in-out;
 }
 
-.container.right-panel-active .overlay {
-    transform: translateX(50%);
-}
+.container.right-panel-active .overlay { transform: translateX(50%); }
 
 .overlay-panel {
     position: absolute;
@@ -131,11 +111,10 @@ body {
 
 .overlay-left { transform: translateX(-20%); }
 .container.right-panel-active .overlay-left { transform: translateX(0); }
-
 .overlay-right { right: 0; transform: translateX(0); }
 .container.right-panel-active .overlay-right { transform: translateX(20%); }
 
-/* ESTILIZAÇÃO DOS ELEMENTOS */
+/* ELEMENTOS */
 h2 { margin-bottom: 15px; font-size: 24px; }
 p { font-size: 14px; line-height: 20px; margin: 20px 0 30px; }
 
@@ -151,11 +130,6 @@ input {
     font-size: 14px;
 }
 
-input:focus {
-    border-color: #ff4fa3;
-    box-shadow: 0 0 0 3px rgba(255,79,163,0.15);
-}
-
 button {
     width: 100%;
     padding: 12px;
@@ -163,57 +137,66 @@ button {
     border: none;
     font-weight: 600;
     cursor: pointer;
-    transition: transform 80ms ease-in;
-    margin-top: 5px;
     text-transform: uppercase;
+    transition: transform 80ms ease-in;
 }
 
-button:active { transform: scale(0.95); }
-
-.btn-login, .btn-register {
-    background: linear-gradient(135deg, #ff4fa3, #ff1f6d);
-    color: #fff;
-}
-
-.btn-ghost {
-    background: transparent;
-    border: 1px solid #ffffff;
-    width: auto;
-    padding: 10px 40px;
-}
-
-.btn-google {
-    background: white;
-    color: #000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    margin-top: 15px;
-}
+.btn-login, .btn-register { background: linear-gradient(135deg, #ff4fa3, #ff1f6d); color: #fff; }
+.btn-ghost { background: transparent; border: 1px solid #ffffff; width: auto; padding: 10px 40px; }
+.btn-google { background: white; color: #000; display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 15px; }
 .btn-google img { width: 18px; }
 
-.btn-ghost:hover {  
-    color: #ffffff;
-    background: rgba(255,255,255,0.1);
-    border-color: #ff4fa3;
-    display: flex;
+/* MOBILE SWITCH BUTTON (Aparece só no celular) */
+.mobile-only { display: none; }
+
+/* 📱 RESPONSIVIDADE (MOBILE) */
+@media (max-width: 768px) {
+    .container {
+        min-height: 580px;
+        width: 90vw;
+    }
+
+    .overlay-container { display: none; } /* Esconde o painel deslizante */
+
+    .form-container {
+        width: 100%;
+        padding: 0 20px;
+    }
+
+    /* Ajuste para alternar entre login e cadastro sem o overlay */
+    .container.right-panel-active .sign-in-container {
+        display: none;
+    }
+    
+    .container:not(.right-panel-active) .sign-up-container {
+        display: none;
+    }
+
+    .container.right-panel-active .sign-up-container {
+        transform: none;
+        width: 100%;
+        left: 0;
+        opacity: 1;
+    }
+
+    .mobile-only {
+        display: block;
+        margin-top: 20px;
+        background: transparent;
+        color: #ff4fa3;
+        font-size: 13px;
+        border-bottom: 1px solid #ff4fa3;
+        border-radius: 0;
+        width: auto;
+        padding: 5px;
+    }
 }
 
 /* TOAST */
 .toast {
-    position: fixed;
-    bottom: 25px;
-    left: 50%;
-    transform: translateX(-50%) translateY(20px);
-    background: rgba(20,20,30,0.95);
-    border-radius: 12px;
-    padding: 12px 16px;
-    font-size: 14px;
-    opacity: 0;
-    transition: .3s;
-    border: 1px solid rgba(255,255,255,0.15);
-    z-index: 10000;
+    position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%) translateY(20px);
+    background: rgba(20,20,30,0.95); border-radius: 12px; padding: 12px 16px;
+    font-size: 14px; opacity: 0; transition: .3s; border: 1px solid rgba(255,255,255,0.15); z-index: 10000;
 }
 .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 .toast.success { border-left: 4px solid #22c55e; }
@@ -231,6 +214,7 @@ button:active { transform: scale(0.95); }
         <input type="email" id="reg-email" placeholder="Email">
         <input type="password" id="reg-password" placeholder="Senha">
         <button class="btn-register" onclick="cadastrar()">Cadastrar</button>
+        <button class="mobile-only" onclick="toggleMobile(false)">Já tem conta? Entrar</button>
     </div>
 
     <div class="form-container sign-in-container">
@@ -239,9 +223,9 @@ button:active { transform: scale(0.95); }
         <input type="password" id="password" placeholder="Senha">
         <button class="btn-login" onclick="login()">Entrar</button>
         <button class="btn-google" onclick="loginGoogle()">
-            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg">
-            Google
+            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"> Google
         </button>
+        <button class="mobile-only" onclick="toggleMobile(true)">Não tem conta? Cadastrar</button>
     </div>
 
     <div class="overlay-container">
@@ -282,13 +266,17 @@ const db = getFirestore(app);
 const provider = new GoogleAuthProvider();
 const ADMIN_EMAIL = "arthurdinizrede@gmail.com";
 
-// Lógica de Troca de Painel
-const signUpButton = document.getElementById('signUp');
-const signInButton = document.getElementById('signIn');
 const container = document.getElementById('container');
 
-signUpButton.addEventListener('click', () => container.classList.add("right-panel-active"));
-signInButton.addEventListener('click', () => container.classList.remove("right-panel-active"));
+// Troca no PC
+document.getElementById('signUp').addEventListener('click', () => container.classList.add("right-panel-active"));
+document.getElementById('signIn').addEventListener('click', () => container.classList.remove("right-panel-active"));
+
+// Troca no Mobile
+window.toggleMobile = (isSignUp) => {
+    if(isSignUp) container.classList.add("right-panel-active");
+    else container.classList.remove("right-panel-active");
+}
 
 window.showToast = function(msg, type="error") {
     const toast = document.getElementById("toast");
@@ -328,9 +316,7 @@ window.cadastrar = async function() {
     const sobrenome = document.getElementById("reg-sobrenome").value;
     const email = document.getElementById("reg-email").value;
     const senha = document.getElementById("reg-password").value;
-    
     if(!nome || !email || !senha) { showToast("Preencha os campos obrigatórios"); return; }
-    
     try {
         const userCredential = await createUserWithEmailAndPassword(auth, email, senha);
         const role = email === ADMIN_EMAIL ? "admin" : "aluno";
@@ -340,7 +326,7 @@ window.cadastrar = async function() {
         showToast("Cadastro realizado!", "success");
         setTimeout(() => redirectUser(userCredential.user), 1000);
     } catch (error) {
-        showToast("Erro: " + error.message);
+        showToast("Erro ao cadastrar");
     }
 }
 
