@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anamnese - Consultoria Online</title>
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #0a0a14, #12081a, #2a0a1f);
+            --accent-color: #ff1f6d;
+            --glass-bg: rgba(255, 255, 255, 0.06);
+            --glass-border: rgba(255, 255, 255, 0.12);
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: var(--primary-gradient);
+            color: white;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0; /* Esconde até checar login */
+            transition: opacity 0.5s;
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            margin: 20px auto;
+        }
+
+        h2 {
+            text-align: center;
+            color: white;
+            font-size: 24px;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        fieldset {
+            border: none;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 25px;
+            padding-top: 20px;
+        }
+
+        legend {
+            color: var(--accent-color);
+            font-weight: bold;
+            font-size: 14px;
+            text-transform: uppercase;
+            padding: 0 10px;
+        }
+
+        .form-group { margin-bottom: 15px; }
+
+        label {
+            display: block;
+            font-size: 13px;
+            margin-bottom: 6px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            color: white;
+            outline: none;
+            transition: 0.3s;
+            box-sizing: border-box;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--accent-color);
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        input:disabled {
+            background: rgba(255, 255, 255, 0.03);
+            color: rgba(255, 255, 255, 0.4);
+            cursor: not-allowed;
+        }
+
+        option { background: #12081a; color: white; }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        button {
+            width: 100%;
+            background: var(--accent-color);
+            color: white;
+            padding: 15px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            text-transform: uppercase;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 31, 109, 0.4);
+        }
+
+        button:disabled {
+            background: #555;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        #status {
+            text-align: center;
+            font-size: 14px;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+        @media (max-width: 600px) {
+            .grid-2 { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>📋 Ficha de Anamnese</h2>
+    
+    <form id="anamnese-form">
+        <fieldset>
+            <legend>Identificação Pessoal</legend>
+            <div class="form-group">
+                <label>Nome Completo</label>
+                <input type="text" id="nome" required placeholder="Seu nome">
+            </div>
+            <div class="form-group">
+                <label>Seu E-mail (Automático)</label>
+                <input type="email" id="email" required readonly>
+            </div>
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>Peso (kg)</label>
+                    <input type="number" step="0.1" id="peso" placeholder="ex: 75.5" required>
+                </div>
+                <div class="form-group">
+                    <label>Altura (cm)</label>
+                    <input type="number" id="altura" placeholder="ex: 175" required>
+                </div>
+            </div>
+        </fieldset>
+
+        <fieldset>
+            <legend>Histórico de Saúde</legend>
+            <div class="form-group">
+                <label>Possui alguma lesão ou limitação?</label>
+                <textarea id="lesao" rows="2" placeholder="Ex: Joelho, coluna..."></textarea>
+            </div>
+            <div class="form-group">
+                <label>Toma medicamento de uso contínuo?</label>
+                <input type="text" id="medicamento" placeholder="Quais?">
+            </div>
+            <div class="form-group">
+                <label>Problemas cardíacos ou pressão alta?</label>
+                <select id="cardiaco">
+                    <option value="Não">Não</option>
+                    <option value="Sim">Sim</option>
+                </select>
+            </div>
+        </fieldset>
+
+        <fieldset>
+            <legend>Treino e Estilo de Vida</legend>
+            <div class="form-group">
+                <label>Principal Objetivo</label>
+                <select id="objetivo">
+                    <option value="Emagrecimento">Emagrecimento</option>
+                    <option value="Hipertrofia">Ganho de Massa Muscular</option>
+                    <option value="Condicionamento">Condicionamento Físico</option>
+                    <option value="Saúde">Saúde e Bem-estar</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Dias para treinar na semana?</label>
+                <input type="number" id="frequencia" min="1" max="7" placeholder="1 a 7">
+            </div>
+            <div class="form-group">
+                <label>Local de treino:</label>
+                <select id="local">
+                    <option value="Academia">Academia Completa</option>
+                    <option value="Casa">Em casa (com acessórios)</option>
+                    <option value="Parque">Ao ar livre / Calistenia</option>
+                </select>
+            </div>
+        </fieldset>
+
+        <button type="submit" id="btn-enviar">Finalizar e Enviar</button>
+        <p id="status"></p>
+    </form>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-auth.js";
+    import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyAKLvhy6r6tLSMIEt-mZcfHWuiKHHibdcY",
+        authDomain: "meusiteteste1-7b880.firebaseapp.com",
+        projectId: "meusiteteste1-7b880",
+        storageBucket: "meusiteteste1-7b880.appspot.com",
+        messagingSenderId: "107598819774",
+        appId: "1:107598819774:web:1e369753c4b7908a6209ef"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const form = document.getElementById("anamnese-form");
+    const status = document.getElementById("status");
+    const btn = document.getElementById("btn-enviar");
+    const emailInput = document.getElementById("email");
+
+    let currentUserId = null;
+
+    // VERIFICA SE O ALUNO ESTÁ LOGADO
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            currentUserId = user.uid;
+            emailInput.value = user.email; // Preenche o e-mail logado automaticamente
+            document.body.style.opacity = "1"; // Mostra a página
+        } else {
+            window.location.href = "login.html"; // Se não logado, expulsa para o login
+        }
+    });
+
+    form.addEventListener("submit", async function(event) {
+        event.preventDefault();
+        
+        btn.disabled = true;
+        btn.innerText = "Salvando...";
+        status.style.color = "white";
+        status.innerText = "Enviando dados ao sistema...";
+
+        try {
+            await addDoc(collection(db, "anamneses"), {
+                uid: currentUserId, // Vínculo essencial para o bloqueio de aulas
+                nome: document.getElementById("nome").value,
+                email: emailInput.value,
+                peso: document.getElementById("peso").value,
+                altura: document.getElementById("altura").value,
+                lesao: document.getElementById("lesao").value,
+                medicamento: document.getElementById("medicamento").value,
+                cardiaco: document.getElementById("cardiaco").value,
+                objetivo: document.getElementById("objetivo").value,
+                frequencia: document.getElementById("frequencia").value,
+                local: document.getElementById("local").value,
+                dataEnvio: serverTimestamp()
+            });
+
+            status.style.color = "#00ff88";
+            status.innerText = "Ficha salva! Redirecionando...";
+
+            setTimeout(() => {
+                window.location.href = `https://api.whatsapp.com/send?phone=5587996536247&text=Olá, Jéssica! Acabei de preencher minha ficha de anamnese no site.`;
+            }, 1500);
+
+        } catch (error) {
+            console.error("Erro ao salvar:", error);
+            status.style.color = "#ff4d4d";
+            status.innerText = "Erro ao salvar. Tente novamente.";
+            btn.disabled = false;
+            btn.innerText = "Tentar Novamente";
+        }
+    });
+</script>
+
+</body>
+</html>
