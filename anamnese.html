@@ -218,81 +218,80 @@
 </div>
 
 <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-auth.js";
-    import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-auth.js";
+import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js";
 
-    const firebaseConfig = {
-        apiKey: "AIzaSyAKLvhy6r6tLSMIEt-mZcfHWuiKHHibdcY",
-        authDomain: "meusiteteste1-7b880.firebaseapp.com",
-        projectId: "meusiteteste1-7b880",
-        storageBucket: "meusiteteste1-7b880.appspot.com",
-        messagingSenderId: "107598819774",
-        appId: "1:107598819774:web:1e369753c4b7908a6209ef"
-    };
+const firebaseConfig = {
+    apiKey: "AIzaSyAKLvhy6r6tLSMIEt-mZcfHWuiKHHibdcY",
+    authDomain: "meusiteteste1-7b880.firebaseapp.com",
+    projectId: "meusiteteste1-7b880",
+    storageBucket: "meusiteteste1-7b880.appspot.com",
+    messagingSenderId: "107598819774",
+    appId: "1:107598819774:web:1e369753c4b7908a6209ef"
+};
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
 
-    const form = document.getElementById("anamnese-form");
-    const status = document.getElementById("status");
-    const btn = document.getElementById("btn-enviar");
-    const emailInput = document.getElementById("email");
+const form = document.getElementById("anamnese-form");
+const status = document.getElementById("status");
+const btn = document.getElementById("btn-enviar");
+const emailInput = document.getElementById("email");
 
-    let currentUserId = null;
+let currentUserId = null;
 
-    onAuthStateChanged(auth, (user) => {
-        if (user) {
-            currentUserId = user.uid;
-            emailInput.value = user.email;
-            document.body.style.opacity = "1";
-        } else {
-            window.location.href = "login.html";
-        }
-    });
+onAuthStateChanged(auth, (user) => {
+    if (user) {
+        currentUserId = user.uid;
+        emailInput.value = user.email;
+        document.body.style.opacity = "1";
+    } else {
+        window.location.href = "login.html";
+    }
+});
 
-    form.addEventListener("submit", async function(event) {
-        event.preventDefault();
-        
-        btn.disabled = true;
-        btn.innerText = "Salvando...";
-        status.style.color = "white";
-        status.innerText = "Enviando dados ao sistema...";
+form.addEventListener("submit", async function(event) {
+    event.preventDefault();
 
-        try {
-            await addDoc(collection(db, "anamneses"), {
-                uid: currentUserId,
-                nome: document.getElementById("nome").value,
-                email: emailInput.value,
-                peso: document.getElementById("peso").value,
-                altura: document.getElementById("altura").value,
-                lesao: document.getElementById("lesao").value,
-                medicamento: document.getElementById("medicamento").value,
-                cardiaco: document.getElementById("cardiaco").value,
-                objetivo: document.getElementById("objetivo").value,
-                frequencia: document.getElementById("frequencia").value,
-                local: document.getElementById("local").value,
-                dataEnvio: serverTimestamp()
-            });
+    btn.disabled = true;
+    btn.innerText = "Salvando...";
+    status.innerText = "Enviando dados...";
 
-            status.style.color = "#00ff88";
-            status.innerText = "Ficha salva! Redirecionando para as aulas...";
+    try {
+        await setDoc(doc(db, "anamneses_users", currentUserId), {
+            uid: currentUserId,
+            nome: document.getElementById("nome").value,
+            email: emailInput.value,
+            peso: document.getElementById("peso").value,
+            altura: document.getElementById("altura").value,
+            lesao: document.getElementById("lesao").value,
+            medicamento: document.getElementById("medicamento").value,
+            cardiaco: document.getElementById("cardiaco").value,
+            objetivo: document.getElementById("objetivo").value,
+            frequencia: document.getElementById("frequencia").value,
+            local: document.getElementById("local").value,
+            dataEnvio: serverTimestamp()
+        });
 
-            setTimeout(() => {
-                // Redireciona para aulas.html enviando o comando para abrir o WhatsApp por lá
-                window.location.href = "aulas.html?sendWhatsapp=true";
-            }, 1500);
+        status.style.color = "#00ff88";
+        status.innerText = "Ficha salva! Redirecionando...";
 
-        } catch (error) {
-            console.error("Erro ao salvar:", error);
-            status.style.color = "#ff4d4d";
-            status.innerText = "Erro ao salvar. Tente novamente.";
-            btn.disabled = false;
-            btn.innerText = "Tentar Novamente";
-        }
-    });
+        setTimeout(() => {
+            window.location.href = "aulas.html";
+        }, 1500);
+
+    } catch (error) {
+        console.error("Erro:", error);
+        status.style.color = "#ff4d4d";
+        status.innerText = "Erro ao salvar.";
+        btn.disabled = false;
+        btn.innerText = "Tentar Novamente";
+    }
+});
 </script>
+
 
 </body>
 </html>

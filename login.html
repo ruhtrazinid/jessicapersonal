@@ -292,23 +292,50 @@ window.showToast = function(msg, type="error") {
     setTimeout(() => toast.classList.remove("show"), 3000);
 }
 
+// ✅ FUNÇÃO PRINCIPAL DE REDIRECIONAMENTO (CORRIGIDA)
 async function redirectUser(user) {
-    const docRef = doc(db, "users", user.uid);
-    const docSnap = await getDoc(docRef);
+
+    // 🔎 verifica usuário na coleção users
+    const userRef = doc(db, "users", user.uid);
+    const userSnap = await getDoc(userRef);
+
     let role = "aluno";
-    if (docSnap.exists()) {
-        role = docSnap.data().role;
+
+    if (userSnap.exists()) {
+        role = userSnap.data().role;
     } else {
         role = user.email === ADMIN_EMAIL ? "admin" : "aluno";
-        await setDoc(docRef, { email: user.email, role, plano: "Básico" });
+        await setDoc(userRef, { email: user.email, role, plano: "Básico" });
     }
-    window.location.href = role === "admin" ? "admin.html" : "aulas.html";
+
+    // 👑 admin vai direto
+    if (role === "admin") {
+        window.location.href = "admin.html";
+        return;
+    }
+
+    // 🔎 verifica se já fez anamnese
+    const anamRef = doc(db, "anamneses_users", user.uid);
+    const anamSnap = await getDoc(anamRef);
+
+    if (!anamSnap.exists()) {
+        // 🆕 primeiro login → anamnese
+        window.location.href = "anamnese.html";
+    } else {
+        // ✅ já fez → área de membros
+        window.location.href = "aulas.html";
+    }
 }
 
 window.login = async function() {
     const email = document.getElementById("email").value;
     const senha = document.getElementById("password").value;
-    if (!email || !senha) { showToast("Preencha email e senha"); return; }
+
+    if (!email || !senha) {
+        showToast("Preencha email e senha");
+        return;
+    }
+
     try {
         const userCredential = await signInWithEmailAndPassword(auth, email, senha);
         showToast("Login realizado!", "success");
@@ -323,15 +350,24 @@ window.cadastrar = async function() {
     const sobrenome = document.getElementById("reg-sobrenome").value;
     const email = document.getElementById("reg-email").value;
     const senha = document.getElementById("reg-password").value;
-    if(!nome || !email || !senha) { showToast("Preencha os campos obrigatórios"); return; }
+
+    if(!nome || !email || !senha) {
+        showToast("Preencha os campos obrigatórios");
+        return;
+    }
+
     try {
         const userCredential = await createUserWithEmailAndPassword(auth, email, senha);
+
         const role = email === ADMIN_EMAIL ? "admin" : "aluno";
+
         await setDoc(doc(db, "users", userCredential.user.uid), {
             nome, sobrenome, email, role, plano: "Básico", criadoEm: new Date()
         });
+
         showToast("Cadastro realizado!", "success");
         setTimeout(() => redirectUser(userCredential.user), 1000);
+
     } catch (error) {
         showToast("Erro ao cadastrar");
     }
@@ -347,5 +383,6 @@ window.loginGoogle = async function() {
     }
 }
 </script>
+
 </body>
 </html>
