@@ -10,7 +10,7 @@
 * { box-sizing: border-box; }
 
 body {
-  display: none; /* Mantido para proteção - Só aparece se estiver logado e com anamnese ok */
+  display: none; /* Mantido para proteção */
   margin: 0;
   font-family: 'Segoe UI', Arial, sans-serif;
   background: linear-gradient(135deg, #0a0a14, #12081a, #2a0a1f);
@@ -175,7 +175,7 @@ body {
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-auth.js";
-import { getFirestore, doc, getDoc, onSnapshot, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js";
+import { getFirestore, doc, getDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAKLvhy6r6tLSMIEt-mZcfHWuiKHHibdcY",
@@ -190,33 +190,20 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// 🔐 MONITOR ÚNICO: Segurança + Dados + Trava de Anamnese
+// 🔐 MONITOR ÚNICO: Segurança + Dados
 onAuthStateChanged(auth, async (user) => {
   if (!user) {
     window.location.href = "login.html";
     return;
   }
 
+  // Se chegou aqui, o usuário existe
+  document.body.style.display = "block";
+
+  // 1. Buscar Nome e Plano do Aluno
+  const userRef = doc(db, "users", user.uid);
   try {
-    // --- DICA DE MESTRE: CHECAGEM DE ANAMNESE ---
-    const q = query(collection(db, "anamneses"), where("uid", "==", user.uid));
-    const anamneseSnap = await getDocs(q);
-
-    if (anamneseSnap.empty) {
-        // Aluno não tem anamnese? Bloqueia e redireciona.
-        alert("Bem-vindo! Para liberar seus treinos, precisamos que preencha sua ficha de avaliação primeiro.");
-        window.location.replace("anamnese.html");
-        return;
-    }
-    // -------------------------------------------
-
-    // Se chegou aqui, ele tem anamnese, então mostramos a página
-    document.body.style.display = "block";
-
-    // 1. Buscar Nome e Plano do Aluno
-    const userRef = doc(db, "users", user.uid);
     const userSnap = await getDoc(userRef);
-    
     if (userSnap.exists()) {
       const data = userSnap.data();
       document.getElementById("userName").innerText = "👋 Olá, " + (data.nome || "Aluno");
@@ -224,31 +211,27 @@ onAuthStateChanged(auth, async (user) => {
     } else {
       document.getElementById("userName").innerText = "👋 Olá, " + user.email;
     }
-
-    // 2. Ouvir o Treino em Tempo Real
-    const treinoRef = doc(db, "treinos", "diario");
-    onSnapshot(treinoRef, (docSnap) => {
-      if (docSnap.exists()) {
-        const treino = docSnap.data();
-        document.getElementById("treinoTitulo").innerText = "🏋️ " + (treino.titulo || "Treino do Dia");
-        document.getElementById("treinoDesc").innerText = treino.descricao || "Sem descrição disponível.";
-        
-        const btnVideo = document.getElementById("treinoVideo");
-        if (treino.video) {
-          btnVideo.href = treino.video;
-          btnVideo.style.display = "inline-block";
-        } else {
-          btnVideo.style.display = "none";
-        }
-      }
-    });
-
   } catch (e) {
-    console.error("Erro no processo de verificação:", e);
-    // Em caso de erro crítico, libera a página para não travar o aluno, 
-    // mas você pode optar por enviar para uma tela de erro.
-    document.body.style.display = "block";
+    console.error("Erro ao buscar dados do usuário");
   }
+
+  // 2. Ouvir o Treino em Tempo Real
+  const treinoRef = doc(db, "treinos", "diario");
+  onSnapshot(treinoRef, (docSnap) => {
+    if (docSnap.exists()) {
+      const treino = docSnap.data();
+      document.getElementById("treinoTitulo").innerText = "🏋️ " + (treino.titulo || "Treino do Dia");
+      document.getElementById("treinoDesc").innerText = treino.descricao || "Sem descrição disponível.";
+      
+      const btnVideo = document.getElementById("treinoVideo");
+      if (treino.video) {
+        btnVideo.href = treino.video;
+        btnVideo.style.display = "inline-block";
+      } else {
+        btnVideo.style.display = "none";
+      }
+    }
+  });
 });
 
 window.logout = function() {
@@ -262,6 +245,22 @@ window.toggleMenu = function() {
   document.getElementById("overlay").classList.toggle("active");
 }
 </script>
+    // Código para abrir o WhatsApp automaticamente após vir da Anamnese
+    window.addEventListener('load', function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('sendWhatsapp') === 'true') {
+            const msg = encodeURIComponent("Olá, Jéssica! Acabei de preencher minha ficha de anamnese no site.");
+            const urlWhatsapp = `https://api.whatsapp.com/send?phone=5587996536247&text=${msg}`;
+            
+            // Tenta abrir o WhatsApp
+            setTimeout(() => {
+                window.open(urlWhatsapp, '_blank') || window.location.assign(urlWhatsapp);
+            }, 1000);
 
+            // Limpa o link para não abrir de novo se o usuário der F5
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }
+    });
+</script>
 </body>
 </html>

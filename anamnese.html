@@ -261,7 +261,6 @@
         status.innerText = "Enviando dados ao sistema...";
 
         try {
-            // Salva no Firestore primeiro
             await addDoc(collection(db, "anamneses"), {
                 uid: currentUserId,
                 nome: document.getElementById("nome").value,
@@ -278,23 +277,11 @@
             });
 
             status.style.color = "#00ff88";
-            status.innerText = "Ficha salva! Redirecionando...";
+            status.innerText = "Ficha salva! Redirecionando para as aulas...";
 
             setTimeout(() => {
-                const msg = `Olá, Jéssica! Acabei de preencher minha ficha de anamnese no site.`;
-                const urlWhatsapp = `https://api.whatsapp.com/send?phone=5587996536247&text=${encodeURIComponent(msg)}`;
-
-                // DETECÇÃO DE DISPOSITIVO
-                const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-
-                if (isMobile) {
-                    // No mobile, redireciona a aba principal para o WhatsApp
-                    window.location.href = urlWhatsapp;
-                } else {
-                    // No PC, abre o Whats em nova aba e muda o site ao fundo
-                    window.open(urlWhatsapp, '_blank');
-                    window.location.href = "aulas.html";
-                }
+                // Redireciona para aulas.html enviando o comando para abrir o WhatsApp por lá
+                window.location.href = "aulas.html?sendWhatsapp=true";
             }, 1500);
 
         } catch (error) {
