@@ -242,14 +242,13 @@
 
     let currentUserId = null;
 
-    // VERIFICA SE O ALUNO ESTÁ LOGADO
     onAuthStateChanged(auth, (user) => {
         if (user) {
             currentUserId = user.uid;
-            emailInput.value = user.email; // Preenche o e-mail logado automaticamente
-            document.body.style.opacity = "1"; // Mostra a página
+            emailInput.value = user.email;
+            document.body.style.opacity = "1";
         } else {
-            window.location.href = "login.html"; // Se não logado, expulsa para o login
+            window.location.href = "login.html";
         }
     });
 
@@ -263,7 +262,7 @@
 
         try {
             await addDoc(collection(db, "anamneses"), {
-                uid: currentUserId, // Vínculo essencial para o bloqueio de aulas
+                uid: currentUserId,
                 nome: document.getElementById("nome").value,
                 email: emailInput.value,
                 peso: document.getElementById("peso").value,
@@ -278,10 +277,15 @@
             });
 
             status.style.color = "#00ff88";
-            status.innerText = "Ficha salva! Redirecionando...";
+            status.innerText = "Ficha salva! Abrindo WhatsApp e liberando seu acesso...";
 
             setTimeout(() => {
-                window.location.href = `https://api.whatsapp.com/send?phone=5587996536247&text=Olá, Jéssica! Acabei de preencher minha ficha de anamnese no site.`;
+                // 1. Abre o WhatsApp em uma nova aba
+                const msg = `Olá, Jéssica! Acabei de preencher minha ficha de anamnese no site.`;
+                window.open(`https://api.whatsapp.com/send?phone=5587996536247&text=${encodeURIComponent(msg)}`, '_blank');
+
+                // 2. Redireciona a aba atual para a área de aulas
+                window.location.href = "aulas.html";
             }, 1500);
 
         } catch (error) {
