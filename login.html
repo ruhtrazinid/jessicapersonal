@@ -292,37 +292,14 @@ window.showToast = function(msg, type="error") {
     setTimeout(() => toast.classList.remove("show"), 3000);
 }
 
-// ✅ FUNÇÃO PRINCIPAL DE REDIRECIONAMENTO (CORRIGIDA)
+// ✅ LÓGICA ATUALIZADA: SÓ ADMIN OU AULAS
 async function redirectUser(user) {
-
-    // 🔎 verifica usuário na coleção users
-    const userRef = doc(db, "users", user.uid);
-    const userSnap = await getDoc(userRef);
-
-    let role = "aluno";
-
-    if (userSnap.exists()) {
-        role = userSnap.data().role;
-    } else {
-        role = user.email === ADMIN_EMAIL ? "admin" : "aluno";
-        await setDoc(userRef, { email: user.email, role, plano: "Básico" });
-    }
-
-    // 👑 admin vai direto
-    if (role === "admin") {
+    // 1. Verifica se é Admin pelo email definido no topo
+    if (user.email === ADMIN_EMAIL) {
         window.location.href = "admin.html";
-        return;
-    }
-
-    // 🔎 verifica se já fez anamnese
-    const anamRef = doc(db, "anamneses_users", user.uid);
-    const anamSnap = await getDoc(anamRef);
-
-    if (!anamSnap.exists()) {
-        // 🆕 primeiro login → anamnese
-        window.location.href = "anamnese.html";
-    } else {
-        // ✅ já fez → área de membros
+    } 
+    // 2. Todo o restante vai para aulas.html (ignora anamnese)
+    else {
         window.location.href = "aulas.html";
     }
 }
@@ -358,7 +335,6 @@ window.cadastrar = async function() {
 
     try {
         const userCredential = await createUserWithEmailAndPassword(auth, email, senha);
-
         const role = email === ADMIN_EMAIL ? "admin" : "aluno";
 
         await setDoc(doc(db, "users", userCredential.user.uid), {

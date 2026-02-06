@@ -267,10 +267,11 @@ button.action:hover { transform: scale(1.08); }
 
 <div class="admin-layout">
   <div class="sidebar">
-    <h2>🛠 Admin</h2>
-    <div class="menu-item active" onclick="showSection('dashboard')">📊 Dashboard</div>
-    <div class="menu-item" onclick="showSection('alunos')">👤 Alunos</div>
-  </div>
+  <h2>🛠 Admin</h2>
+  <div class="menu-item active" onclick="showSection('dashboard')">📊 Dashboard</div>
+  <div class="menu-item" onclick="showSection('alunos')">👤 Alunos</div>
+  <div class="menu-item" onclick="window.location.href='montar-treino.html'">🏋️ Montar Treino</div>
+</div>
 
   <div class="main">
     <div class="header">
@@ -542,7 +543,9 @@ window.excluirAluno = async function(docId, email, role) {
     showLoading(false);
   }
 };
-
+window.irParaMontarTreino = function(email) {
+    window.location.href = `montar-treino.html?email=${encodeURIComponent(email)}`;
+};
 /* LOGOUT */
 window.logout = () => signOut(auth).then(() => window.location.href = "login.html");
 </script>

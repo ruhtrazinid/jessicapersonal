@@ -190,15 +190,14 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// 🔐 MONITOR ÚNICO: Segurança + Dados
 onAuthStateChanged(auth, async (user) => {
   if (!user) {
     window.location.href = "login.html";
     return;
   }
 
-  // Se chegou aqui, o usuário existe
   document.body.style.display = "block";
+  const userEmail = user.email.toLowerCase(); // Chave para buscar o treino
 
   // 1. Buscar Nome e Plano do Aluno
   const userRef = doc(db, "users", user.uid);
@@ -209,58 +208,65 @@ onAuthStateChanged(auth, async (user) => {
       document.getElementById("userName").innerText = "👋 Olá, " + (data.nome || "Aluno");
       document.getElementById("userPlano").innerText = "Plano atual: " + (data.plano || "Básico");
     } else {
-      document.getElementById("userName").innerText = "👋 Olá, " + user.email;
+      document.getElementById("userName").innerText = "👋 Olá, " + userEmail;
     }
-  } catch (e) {
-    console.error("Erro ao buscar dados do usuário");
-  }
+  } catch (e) { console.error("Erro ao buscar dados do usuário"); }
 
-  // 2. Ouvir o Treino em Tempo Real
-  const treinoRef = doc(db, "treinos", "diario");
+  // 2. OUVIRE O TREINO PERSONALIZADO (A MÁGICA ACONTECE AQUI)
+  // Agora buscamos o documento com o NOME DO EMAIL DO ALUNO
+  const treinoRef = doc(db, "treinos", userEmail); 
+  
   onSnapshot(treinoRef, (docSnap) => {
+    const cardContainer = document.querySelector(".cards");
+    
     if (docSnap.exists()) {
-      const treino = docSnap.data();
-      document.getElementById("treinoTitulo").innerText = "🏋️ " + (treino.titulo || "Treino do Dia");
-      document.getElementById("treinoDesc").innerText = treino.descricao || "Sem descrição disponível.";
+      const dados = docSnap.data();
       
-      const btnVideo = document.getElementById("treinoVideo");
-      if (treino.video) {
-        btnVideo.href = treino.video;
-        btnVideo.style.display = "inline-block";
-      } else {
-        btnVideo.style.display = "none";
-      }
+      // Atualiza o card principal com as observações do Admin
+      document.getElementById("treinoTitulo").innerText = "🏋️ Meu Treino Personalizado";
+      document.getElementById("treinoDesc").innerText = dados.instrucoes || "Siga o cronograma abaixo:";
+
+      // Limpar cards de treinos antigos se existirem para não duplicar na tela
+      const cardsAntigos = document.querySelectorAll('.card-dia-dinamico');
+      cardsAntigos.forEach(c => c.remove());
+
+      // Renderizar cada dia do cronograma
+      const dias = ["segunda", "terca", "quarta", "quinta", "sexta"];
+      dias.forEach(dia => {
+        if (dados.cronograma && dados.cronograma[dia] && dados.cronograma[dia].length > 0) {
+          
+          const listaExercicios = dados.cronograma[dia].map(ex => `
+            <div style="margin-top:10px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:5px;">
+              <strong>${ex.nome}</strong><br>
+              <img src="${ex.arquivo}" style="width:100%; border-radius:8px; margin-top:5px;">
+            </div>
+          `).join('');
+
+          const diaCard = document.createElement('div');
+          diaCard.className = 'card card-dia-dinamico';
+          diaCard.innerHTML = `
+            <h3 style="text-transform: capitalize;">📅 ${dia}</h3>
+            ${listaExercicios}
+          `;
+          cardContainer.appendChild(diaCard);
+        }
+      });
+
+    } else {
+      document.getElementById("treinoTitulo").innerText = "🏋️ Sem treino ainda";
+      document.getElementById("treinoDesc").innerText = "Seu treinador ainda está preparando seu plano personalizado.";
     }
   });
 });
 
 window.logout = function() {
-  signOut(auth).then(() => {
-    window.location.replace("login.html");
-  });
+  signOut(auth).then(() => { window.location.replace("login.html"); });
 }
 
 window.toggleMenu = function() {
   document.getElementById("sidebar").classList.toggle("active");
   document.getElementById("overlay").classList.toggle("active");
 }
-<script>
-    // Código para abrir o WhatsApp automaticamente após vir da Anamnese
-    window.addEventListener('load', function() {
-        const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.get('sendWhatsapp') === 'true') {
-            const msg = encodeURIComponent("Olá, Jéssica! Acabei de preencher minha ficha de anamnese no site.");
-            const urlWhatsapp = `https://api.whatsapp.com/send?phone=5587996536247&text=${msg}`;
-            
-            // Tenta abrir o WhatsApp
-            setTimeout(() => {
-                window.open(urlWhatsapp, '_blank') || window.location.assign(urlWhatsapp);
-            }, 1000);
-
-            // Limpa o link para não abrir de novo se o usuário der F5
-            window.history.replaceState({}, document.title, window.location.pathname);
-        }
-    });
 </script>
 </body>
 </html>
