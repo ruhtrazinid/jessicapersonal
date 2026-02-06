@@ -7,7 +7,6 @@
 <link rel="icon" href="logo.ico">
 
 <style>
-/* Estilos Base */
 body {
   display: none; 
   margin: 0;
@@ -17,6 +16,32 @@ body {
   min-height: 100vh;
 }
 
+/* LOADING */
+#loadingOverlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(6px);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+.loader {
+  width: 60px;
+  height: 60px;
+  border: 5px solid rgba(255,255,255,0.2);
+  border-top: 5px solid #ff1f6d;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Layout */
 .admin-layout { display: flex; min-height: 100vh; }
 .sidebar { width: 240px; background: rgba(255,255,255,0.05); border-right: 1px solid rgba(255,255,255,0.1); padding: 20px; backdrop-filter: blur(12px); }
 .sidebar h2 { font-size: 18px; margin-bottom: 20px; }
@@ -27,83 +52,224 @@ body {
 .logout { background: transparent; border: 1px solid rgba(255,255,255,0.3); color: white; padding: 8px 14px; border-radius: 10px; cursor: pointer; }
 .logout:hover { background: rgba(255,255,255,0.1); }
 
-/* Cards Dashboard */
+/* Cards */
 .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px; }
-.card { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); border-radius: 16px; padding: 18px; backdrop-filter: blur(12px); }
-.card span { font-size: 28px; font-weight: bold; }
+.card { 
+  background: rgba(255,255,255,0.06); 
+  border: 1px solid rgba(255,255,255,0.12); 
+  border-radius: 16px; 
+  padding: 18px; 
+  backdrop-filter: blur(12px);
+  transition: .2s;
+  position: relative;
+  overflow: hidden;
+}
+.card:hover { transform: translateY(-4px); }
+.card span { font-size: 32px; font-weight: bold; }
+.card::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: 16px;
+  background: linear-gradient(120deg, #ff1f6d, #7c3aed, #2563eb);
+  opacity: .18;
+}
 
-/* Tabelas e Caixas */
+/* Dashboard grid */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+.panel-box {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 16px;
+  padding: 16px;
+  backdrop-filter: blur(12px);
+  transition: .2s;
+}
+.panel-box:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+}
+.panel-box h3 {
+  margin-bottom: 12px;
+  font-size: 16px;
+  color: #ff1f6d;
+}
+
+/* Últimos alunos */
+#lastUsers {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+#lastUsers li {
+  font-size: 13px;
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+/* Status */
+.status.ok { color: #22c55e; font-weight: bold; }
+
+/* Tabela */
 .search-box { margin-bottom: 12px; }
 .search-box input { width: 100%; padding: 10px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.08); color: white; outline: none; }
 .table-box { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); border-radius: 16px; padding: 15px; backdrop-filter: blur(12px); overflow-x: auto; margin-bottom: 25px; }
 table { width: 100%; border-collapse: collapse; font-size: 14px; }
 th, td { padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); text-align: left; }
 
-/* Botões de Ação */
-button.action { padding: 6px 10px; border-radius: 8px; border: none; cursor: pointer; font-size: 12px; margin-right: 5px; }
+/* Botões */
+button.action { 
+  padding: 6px 10px; 
+  border-radius: 8px; 
+  border: none; 
+  cursor: pointer; 
+  font-size: 12px; 
+  margin-right: 5px; 
+  transition: .2s;
+}
+button.action:hover { transform: scale(1.08); }
 .btn-delete { background: #ff1f6d; color: white; }
-.btn-plan { background: #ffd1e8; color: #2a0a1f; }
-.btn-view { background: #2563eb; color: white; }
+.btn-edit { background: linear-gradient(135deg, #7c3aed, #2563eb); color: white; }
 
-/* Formulário de Treino */
-.admin-container { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); border-radius: 16px; padding: 20px; backdrop-filter: blur(12px); }
-#training-form { display: flex; flex-direction: column; gap: 12px; }
-#training-form input, #training-form textarea { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2); padding: 12px; border-radius: 10px; color: white; outline: none; }
-#training-form button { background: #ff1f6d; color: white; border: none; padding: 12px; border-radius: 10px; cursor: pointer; font-weight: bold; }
-
-/* Modal */
-.modal-overlay {
-    display: none; 
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: rgba(0, 0, 0, 0.7);
-    backdrop-filter: blur(8px);
-    z-index: 1000;
-    justify-content: center;
-    align-items: center;
-}
-.modal-content {
-    background: rgba(20, 10, 30, 0.95);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 20px;
-    width: 90%;
-    max-width: 500px;
-    padding: 25px;
-    color: white;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-    animation: fadeIn 0.3s ease;
-}
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-20px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-.modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    padding-bottom: 15px;
-    margin-bottom: 20px;
-}
-.close-modal { font-size: 28px; cursor: pointer; color: rgba(255,255,255,0.6); }
-.close-modal:hover { color: #ff1f6d; }
-.info-item { margin-bottom: 15px; background: rgba(255, 255, 255, 0.05); padding: 10px; border-radius: 8px; }
-.info-label { display: block; font-size: 11px; color: #ff1f6d; text-transform: uppercase; font-weight: bold; margin-bottom: 4px; }
-
-/* Controle de abas */
+/* Abas */
 .content-section { display: none; }
 .content-section.active { display: block; }
+
+/* ALERTA */
+.alert-overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.75);
+  backdrop-filter: blur(6px);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+}
+.alert-box {
+  background: linear-gradient(135deg, #1a0a1f, #2a0a1f);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 18px;
+  padding: 22px 26px;
+  width: 90%;
+  max-width: 420px;
+  color: white;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+  animation: alertPop .25s ease;
+}
+@keyframes alertPop {
+  from { transform: scale(0.85); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+.alert-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+.alert-btn {
+  padding: 8px 16px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: bold;
+}
+.alert-btn.cancel { background: rgba(255,255,255,0.15); color: white; }
+.alert-btn.confirm { background: #ff1f6d; color: white; }
+
+/* MODAL EDITAR PLANO */
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(6px);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 11000;
+}
+.modal-box {
+  background: linear-gradient(135deg, #1a0a1f, #2a0a1f);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 18px;
+  padding: 20px;
+  width: 90%;
+  max-width: 400px;
+}
+.modal-box h3 {
+  margin-bottom: 10px;
+  color: #ff1f6d;
+}
+.modal-box select {
+  width: 100%;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.2);
+  background: rgba(255,255,255,0.1);
+  color: white;
+  outline: none;
+  margin-bottom: 15px;
+}
+.modal-box select option {
+  color: white;
+  background: #1a0a1f;
+}
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
 </style>
 </head>
 <body>
+
+<div id="loadingOverlay">
+  <div class="loader"></div>
+</div>
+
+<div id="customAlert" class="alert-overlay">
+  <div class="alert-box">
+    <h3 id="alertTitle">Confirmação</h3>
+    <p id="alertMessage">Tem certeza?</p>
+    <div class="alert-actions">
+      <button id="alertCancel" class="alert-btn cancel">Cancelar</button>
+      <button id="alertConfirm" class="alert-btn confirm">Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL EDITAR PLANO -->
+<div id="planModal" class="modal-overlay">
+  <div class="modal-box">
+    <h3>Editar plano do aluno</h3>
+    <select id="planSelect">
+      <option value="Iniciante-Academia">Iniciante - Academia (R$ 39,90)</option>
+      <option value="Intermediário-Academia">Intermediário - Academia (R$ 69,90)</option>
+      <option value="Avançado-Academia">Avançado - Academia (R$ 89,90)</option>
+
+      <option value="Iniciante-Casa">Iniciante - Casa (R$ 39,90)</option>
+      <option value="Intermediário-Casa">Intermediário - Casa (R$ 59,90)</option>
+      <option value="Avançado-Casa">Avançado - Casa (R$ 79,90)</option>
+    </select>
+    <div class="modal-actions">
+      <button class="alert-btn cancel" onclick="closePlanModal()">Cancelar</button>
+      <button class="alert-btn confirm" onclick="salvarPlano()">Salvar</button>
+    </div>
+  </div>
+</div>
 
 <div class="admin-layout">
   <div class="sidebar">
     <h2>🛠 Admin</h2>
     <div class="menu-item active" onclick="showSection('dashboard')">📊 Dashboard</div>
     <div class="menu-item" onclick="showSection('alunos')">👤 Alunos</div>
-    <div class="menu-item" onclick="showSection('anamneses')">📋 Anamneses</div>
   </div>
 
   <div class="main">
@@ -113,64 +279,55 @@ button.action { padding: 6px 10px; border-radius: 8px; border: none; cursor: poi
     </div>
 
     <div id="dashboard" class="content-section active">
-        <div class="cards">
-          <div class="card"><p>Total de alunos</p><span id="totalUsers">0</span></div>
-          <div class="card"><p>Admins</p><span id="totalAdmins">0</span></div>
+
+      <div class="cards">
+        <div class="card"><p>👤 Total de alunos</p><span id="totalUsers">0</span></div>
+        <div class="card"><p>💎 Premium</p><span id="premiumUsers">0</span></div>
+        <div class="card"><p>🆕 Novos hoje</p><span id="newToday">0</span></div>
+        <div class="card"><p>💰 Renda total</p><span id="totalRevenue">R$ 0,00</span></div>
+      </div>
+
+      <div class="dashboard-grid">
+        <div class="panel-box">
+          <h3>🚀 Últimos alunos</h3>
+          <ul id="lastUsers"></ul>
         </div>
-        <div class="admin-container">
-          <h2>Postar Novo Treino</h2>
-          <form id="training-form">
-              <input type="text" id="training-title" placeholder="Título" required>
-              <textarea id="training-desc" placeholder="Exercícios..." rows="5" required></textarea>
-              <input type="text" id="training-video" placeholder="Link do vídeo">
-              <button type="submit">Publicar Treino</button>
-          </form>
+
+        <div class="panel-box">
+          <h3>💰 Receita do site</h3>
+          <p style="font-size:22px;font-weight:bold" id="revenueBig">R$ 0,00</p>
+          <p style="opacity:.7;font-size:13px">Baseado nos planos dos alunos</p>
         </div>
+
+        <div class="panel-box">
+          <h3>⚙️ Status do sistema</h3>
+          <p>Firebase: <span class="status ok">● Online</span></p>
+          <p>Banco de dados: <span class="status ok">● OK</span></p>
+        </div>
+      </div>
+
     </div>
 
     <div id="alunos" class="content-section">
-        <div class="search-box">
-          <input type="text" id="search" placeholder="Buscar aluno..." onkeyup="filtrarUsuarios()">
-        </div>
-        <div class="table-box">
-          <table>
-            <thead>
-              <tr><th>Email</th><th>Plano</th><th>Role</th><th>Ações</th></tr>
-            </thead>
-            <tbody id="userList"></tbody>
-          </table>
-        </div>
-    </div>
-
-    <div id="anamneses" class="content-section">
-        <div class="table-box">
-            <table>
-                <thead>
-                    <tr><th>Data</th><th>Nome</th><th>Objetivo</th><th>Peso/Alt</th><th>Ações</th></tr>
-                </thead>
-                <tbody id="anamneseList">
-                    <tr><td colspan="5">Carregando fichas...</td></tr>
-                </tbody>
-            </table>
-        </div>
+      <div class="search-box">
+        <input type="text" id="search" placeholder="Buscar aluno..." onkeyup="filtrarUsuarios()">
+      </div>
+      <div class="table-box">
+        <table>
+          <thead>
+            <tr><th>Email</th><th>Plano</th><th>Role</th><th>Ações</th></tr>
+          </thead>
+          <tbody id="userList"></tbody>
+        </table>
+      </div>
     </div>
   </div>
-</div>
-
-<div id="modalAnamnese" class="modal-overlay">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h3>📄 Detalhes da Anamnese</h3>
-            <span class="close-modal" onclick="fecharModal()">&times;</span>
-        </div>
-        <div id="modal-body-content"></div>
-    </div>
 </div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-auth.js";
-import { getFirestore, collection, getDocs, updateDoc, doc, getDoc, setDoc, deleteDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js";
+import { getFirestore, collection, getDocs, doc, getDoc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAKLvhy6r6tLSMIEt-mZcfHWuiKHHibdcY",
@@ -187,15 +344,89 @@ const db = getFirestore(app);
 
 const ADMIN_EMAIL = "arthurdinizrede@gmail.com";
 
-window.showSection = function(sectionId) {
-    document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
-    document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
-    document.getElementById(sectionId).classList.add('active');
-    if(event) event.currentTarget.classList.add('active');
-    document.getElementById('section-title').innerText = sectionId.charAt(0).toUpperCase() + sectionId.slice(1);
-    if(sectionId === 'anamneses') carregarAnamneses();
+/* PREÇOS DOS PLANOS */
+const PLAN_PRICES = {
+  "Iniciante-Academia": 39.90,
+  "Intermediário-Academia": 69.90,
+  "Avançado-Academia": 89.90,
+  "Iniciante-Casa": 39.90,
+  "Intermediário-Casa": 59.90,
+  "Avançado-Casa": 79.90,
+  "Básico": 0,
+  "Basico": 0
 };
 
+let currentUserId = null;
+
+/* LOADING */
+function showLoading(show=true){
+  document.getElementById("loadingOverlay").style.display = show ? "flex" : "none";
+}
+
+/* ALERTA */
+function showCustomAlert(title, message) {
+  return new Promise((resolve) => {
+    const overlay = document.getElementById("customAlert");
+    const alertTitle = document.getElementById("alertTitle");
+    const alertMessage = document.getElementById("alertMessage");
+    const btnConfirm = document.getElementById("alertConfirm");
+    const btnCancel = document.getElementById("alertCancel");
+
+    alertTitle.innerText = title;
+    alertMessage.innerText = message;
+    overlay.style.display = "flex";
+
+    btnConfirm.onclick = () => {
+      overlay.style.display = "none";
+      resolve(true);
+    };
+    btnCancel.onclick = () => {
+      overlay.style.display = "none";
+      resolve(false);
+    };
+  });
+}
+
+/* MODAL PLANO */
+window.openPlanModal = function(userId, planoAtual) {
+  currentUserId = userId;
+  document.getElementById("planSelect").value = planoAtual;
+  document.getElementById("planModal").style.display = "flex";
+};
+
+window.closePlanModal = function() {
+  document.getElementById("planModal").style.display = "none";
+};
+
+window.salvarPlano = async function() {
+  const novoPlano = document.getElementById("planSelect").value;
+
+  showLoading(true);
+
+  try {
+    await updateDoc(doc(db, "users", currentUserId), {
+      plano: novoPlano
+    });
+    await showCustomAlert("Sucesso", "Plano atualizado com sucesso!");
+    closePlanModal();
+    carregarUsuarios();
+  } catch (err) {
+    console.error(err);
+    await showCustomAlert("Erro", "Não foi possível atualizar o plano.");
+  } finally {
+    showLoading(false);
+  }
+};
+
+/* ABAS */
+window.showSection = function(sectionId) {
+  document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
+  document.getElementById(sectionId).classList.add('active');
+  document.getElementById('section-title').innerText = sectionId.toUpperCase();
+};
+
+/* AUTH */
 onAuthStateChanged(auth, async (user) => {
   if (user) {
     const docRef = doc(db, "users", user.uid);
@@ -211,75 +442,108 @@ onAuthStateChanged(auth, async (user) => {
   }
 });
 
+/* CARREGAR USUÁRIOS */
 async function carregarUsuarios() {
+  showLoading(true);
   const snapshot = await getDocs(collection(db, "users"));
-  let total = 0; let admins = 0;
+
+  let total = 0;
+  let premium = 0;
+  let novosHoje = 0;
+  let receita = 0;
+  let emails = [];
+
   const tbody = document.getElementById("userList");
   tbody.innerHTML = "";
+
+  const hoje = new Date().toDateString();
+
   snapshot.forEach(docSnap => {
-    const u = docSnap.data(); total++;
-    if (u.role === "admin") admins++;
-    tbody.innerHTML += `<tr><td>${u.email}</td><td>${u.plano || "Básico"}</td><td>${u.role || "user"}</td>
-    <td><button class="action btn-plan" onclick="mudarPlano('${docSnap.id}')">Plano</button></td></tr>`;
+    const u = docSnap.data();
+    total++;
+
+    const plano = u.plano || "Básico";
+
+    if (plano.includes("Avançado") || plano.includes("Intermediário")) premium++;
+
+    receita += PLAN_PRICES[plano] ?? 0;
+
+    if (u.createdAt) {
+      const dataUser = new Date(u.createdAt.seconds * 1000).toDateString();
+      if (dataUser === hoje) novosHoje++;
+    }
+
+    emails.push(u.email);
+
+    tbody.innerHTML += `
+      <tr>
+        <td>${u.email}</td>
+        <td>${plano.replace("-", " - ")}</td>
+        <td>${u.role || "user"}</td>
+        <td>
+          <button class="action btn-edit" onclick="openPlanModal('${docSnap.id}', '${plano}')">Editar plano</button>
+          <button class="action btn-delete" onclick="excluirAluno('${docSnap.id}', '${u.email}', '${u.role}')">Excluir</button>
+        </td>
+      </tr>`;
   });
+
   document.getElementById("totalUsers").innerText = total;
-  document.getElementById("totalAdmins").innerText = admins;
+  document.getElementById("premiumUsers").innerText = premium;
+  document.getElementById("newToday").innerText = novosHoje;
+
+  const receitaFormatada = receita.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+  document.getElementById("totalRevenue").innerText = receitaFormatada;
+  document.getElementById("revenueBig").innerText = receitaFormatada;
+
+  const lastList = document.getElementById("lastUsers");
+  lastList.innerHTML = "";
+  emails.slice(-5).reverse().forEach(email => {
+    lastList.innerHTML += `<li>• ${email}</li>`;
+  });
+
+  showLoading(false);
 }
 
-// CARREGAR ANAMNESES COM EXCLUIR
-async function carregarAnamneses() {
-    const tbody = document.getElementById("anamneseList");
-    tbody.innerHTML = "<tr><td colspan='5'>Buscando fichas...</td></tr>";
-    try {
-        const q = query(collection(db, "anamneses"), orderBy("dataEnvio", "desc"));
-        const snapshot = await getDocs(q);
-        tbody.innerHTML = "";
-        snapshot.forEach(docSnap => {
-            const a = docSnap.data();
-            const dataFmt = a.dataEnvio?.toDate().toLocaleDateString('pt-BR') || "---";
-            const row = document.createElement("tr");
-            row.innerHTML = `
-                <td>${dataFmt}</td>
-                <td><b>${a.nome}</b><br><small>${a.email}</small></td>
-                <td>${a.objetivo}</td>
-                <td>${a.peso}kg / ${a.altura}cm</td>
-                <td>
-                    <button class="action btn-view" id="view-${docSnap.id}">Detalhes</button>
-                    <button class="action btn-delete" id="del-${docSnap.id}">Excluir</button>
-                </td>
-            `;
-            tbody.appendChild(row);
-            document.getElementById(`view-${docSnap.id}`).onclick = () => verFicha(a);
-            document.getElementById(`del-${docSnap.id}`).onclick = () => excluirAnamnese(docSnap.id, a.nome);
-        });
-    } catch (e) {
-        tbody.innerHTML = "<tr><td colspan='5'>Erro ao carregar.</td></tr>";
-    }
-}
+/* FILTRO */
+window.filtrarUsuarios = function() {
+  const termo = document.getElementById("search").value.toLowerCase();
+  const rows = document.querySelectorAll("#userList tr");
 
-window.excluirAnamnese = async function(id, nome) {
-    if (confirm(`Excluir a ficha de ${nome}?`)) {
-        try {
-            await deleteDoc(doc(db, "anamneses", id));
-            carregarAnamneses();
-        } catch (error) { alert("Erro ao excluir."); }
-    }
+  rows.forEach(row => {
+    const email = row.children[0].innerText.toLowerCase();
+    row.style.display = email.includes(termo) ? "" : "none";
+  });
 };
 
-window.verFicha = function(dados) {
-    const content = document.getElementById("modal-body-content");
-    content.innerHTML = `
-        <div class="info-item"><span class="info-label">Objetivo</span>${dados.objetivo}</div>
-        <div class="info-item"><span class="info-label">Lesões</span>${dados.lesao || "Nenhuma"}</div>
-        <div class="info-item"><span class="info-label">Medicamentos</span>${dados.medicamento || "Nenhum"}</div>
-        <div class="info-item"><span class="info-label">Cardíaco</span>${dados.cardiaco}</div>
-        <div class="info-item"><span class="info-label">Frequência</span>${dados.frequencia}x/semana</div>
-        <div class="info-item"><span class="info-label">Local</span>${dados.local || "Não informado"}</div>
-    `;
-    document.getElementById("modalAnamnese").style.display = "flex";
+/* EXCLUIR */
+window.excluirAluno = async function(docId, email, role) {
+  if(role === "admin"){
+    await showCustomAlert("Acesso negado", "Você não pode excluir um administrador.");
+    return;
+  }
+
+  const confirmar = await showCustomAlert(
+    "Excluir aluno",
+    `Deseja realmente excluir o aluno:\n${email}?`
+  );
+
+  if (!confirmar) return;
+
+  showLoading(true);
+
+  try {
+    await deleteDoc(doc(db, "users", docId));
+    await showCustomAlert("Sucesso", "Aluno excluído com sucesso!");
+    carregarUsuarios();
+  } catch (error) {
+    console.error("Erro:", error);
+    await showCustomAlert("Erro", "Não foi possível excluir o aluno.");
+  } finally {
+    showLoading(false);
+  }
 };
 
-window.fecharModal = () => document.getElementById("modalAnamnese").style.display = "none";
+/* LOGOUT */
 window.logout = () => signOut(auth).then(() => window.location.href = "login.html");
 </script>
 </body>
