@@ -7,13 +7,11 @@
     <style>
         body { font-family: 'Segoe UI', sans-serif; background: #0a0a14; color: white; margin: 0; display: flex; height: 100vh; }
         
-        /* Barra Lateral de Exercícios */
         .sidebar { width: 300px; background: rgba(255,255,255,0.05); border-right: 1px solid rgba(255,255,255,0.1); padding: 20px; overflow-y: auto; }
         .ex-item { background: rgba(255,255,255,0.1); padding: 10px; margin-bottom: 10px; border-radius: 8px; cursor: pointer; transition: 0.3s; border: 1px solid transparent; }
         .ex-item:hover { border-color: #ff4fa3; background: rgba(255,79,163,0.1); }
         .ex-item img { width: 100%; border-radius: 4px; margin-top: 5px; }
 
-        /* Área Principal */
         .main { flex: 1; padding: 30px; overflow-y: auto; }
         .header { background: rgba(255,255,255,0.05); padding: 20px; border-radius: 15px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.1); }
         
@@ -28,7 +26,6 @@
 
         .btn-salvar { background: #ff4fa3; color: white; border: none; padding: 15px 40px; border-radius: 30px; font-weight: bold; cursor: pointer; float: right; margin-top: 20px; font-size: 16px; transition: 0.3s; }
         .btn-salvar:hover { transform: scale(1.05); box-shadow: 0 0 20px rgba(255,79,163,0.4); }
-        
     </style>
 </head>
 <body>
@@ -40,8 +37,8 @@
         <div class="ex-item" onclick="adicionarEx('Supino Reto', 'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJueXF4ZzR6ZzR6ZzR6ZzR6ZzR6ZzR6ZzR6ZzR6ZzR6JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/3o7TKMGpxx6V0Qv93G/giphy.gif')">
             <span>Supino Reto</span>
         </div>
-        <div class="ex-item" onclick="adicionarEx('Agachamento', 'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJueXF4ZzR6ZzR6ZzR6ZzR6ZzR6ZzR6ZzR6ZzR6ZzR6JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/3o7TKMGpxx6V0Qv93G/giphy.gif')">
-            <span>Agachamento</span>
+        <div class="ex-item" onclick="adicionarEx('Abdominais', 'img/Abdominais.gif')">
+            <span>Abdominais</span>
         </div>
     </div>
 
@@ -67,12 +64,23 @@
             <div class="dia-card"><h4>Sexta</h4><div id="lista-sexta"></div></div>
         </div>
 
+        <!-- ÁREA INVISÍVEL QUE VAI VIRAR PDF -->
+        <div id="treinoPDF" style="background:white;color:black;padding:20px;display:none;">
+            <h2>🏋️ Treino Personalizado</h2>
+            <p id="pdfEmail"></p>
+            <p id="pdfObs"></p>
+            <div id="pdfConteudo"></div>
+        </div>
+
         <button class="btn-salvar" id="btnSalvar">🚀 Publicar Treino</button>
     </div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
 import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-storage.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAKLvhy6r6tLSMIEt-mZcfHWuiKHHibdcY",
@@ -85,11 +93,12 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+const storage = getStorage(app);
 
 // Estado local do treino
 let treinoData = { segunda: [], terca: [], quarta: [], quinta: [], sexta: [] };
 
-// Função para adicionar (disponibilizada globalmente)
+// Função para adicionar
 window.adicionarEx = (nome, arquivo) => {
     const dia = document.getElementById('diaAtual').value;
     treinoData[dia].push({ nome, arquivo });
@@ -113,7 +122,26 @@ function renderizar() {
     });
 }
 
-// FUNÇÃO SALVAR NO FIREBASE
+// 🔥 NOVO: gerar HTML do treino para PDF
+function gerarHTMLTreino(email, obs, dados) {
+    let html = "";
+
+    for (let dia in dados) {
+        if (dados[dia].length > 0) {
+            html += `<h3>${dia.toUpperCase()}</h3><ul>`;
+            dados[dia].forEach(ex => {
+                html += `<li>${ex.nome}</li>`;
+            });
+            html += "</ul>";
+        }
+    }
+
+    document.getElementById("pdfEmail").innerText = "Aluno: " + email;
+    document.getElementById("pdfObs").innerText = "Observações: " + obs;
+    document.getElementById("pdfConteudo").innerHTML = html;
+}
+
+// FUNÇÃO SALVAR NO FIREBASE (ATUALIZADA, SEM REMOVER NADA)
 document.getElementById('btnSalvar').onclick = async () => {
     const email = document.getElementById('alunoEmail').value.toLowerCase().trim();
     const obs = document.getElementById('obsGeral').value;
@@ -121,16 +149,33 @@ document.getElementById('btnSalvar').onclick = async () => {
     if (!email) return alert("Digite o e-mail do aluno!");
 
     try {
-        // Criamos o documento com o ID sendo o EMAIL do aluno
+
+        // 1️⃣ gerar HTML do treino
+        gerarHTMLTreino(email, obs, treinoData);
+
+        const elemento = document.getElementById("treinoPDF");
+
+        // 2️⃣ gerar PDF
+        const pdfBlob = await html2pdf().from(elemento).outputPdf('blob');
+
+        // 3️⃣ salvar PDF no Firebase Storage
+        const pdfRef = ref(storage, `treinos/${email}.pdf`);
+        await uploadBytes(pdfRef, pdfBlob);
+
+        const pdfUrl = await getDownloadURL(pdfRef);
+
+        // 4️⃣ salvar no Firestore (igual ao teu sistema, só adicionando pdfUrl)
         const treinoRef = doc(db, "treinos", email);
-        
+
         await setDoc(treinoRef, {
             instrucoes: obs,
             cronograma: treinoData,
+            pdfUrl: pdfUrl,
             dataAtualizacao: new Date().toISOString()
         });
 
-        alert("✅ Treino enviado com sucesso para " + email);
+        alert("🔥 Treino enviado com PDF para " + email);
+
     } catch (e) {
         console.error(e);
         alert("Erro ao salvar treino. Verifique o console.");

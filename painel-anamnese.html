@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Painel de Anamneses</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #0a0a14;
+  color: white;
+  padding: 20px;
+}
+
+h1 {
+  text-align: center;
+  color: #ff1f6d;
+  margin-bottom: 20px;
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  margin-bottom: 15px;
+  outline: none;
+}
+
+.card {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+  padding: 15px;
+  margin-bottom: 12px;
+  transition: 0.2s;
+}
+
+.card:hover {
+  transform: scale(1.01);
+  border-color: #ff1f6d;
+}
+
+.card h3 {
+  margin: 0 0 8px;
+  color: #ff1f6d;
+}
+
+.card p {
+  margin: 4px 0;
+  font-size: 14px;
+}
+
+.btn {
+  margin-top: 10px;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.btn-delete {
+  background: #ff4d4d;
+  color: white;
+}
+
+.status {
+  text-align: center;
+  margin-top: 10px;
+  font-size: 14px;
+}
+</style>
+</head>
+<body>
+
+<h1>📊 Painel de Anamneses</h1>
+
+<input type="text" id="search" placeholder="Buscar por nome ou email...">
+
+<div id="lista"></div>
+<p class="status" id="status"></p>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
+import { getFirestore, collection, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAKLvhy6r6tLSMIEt-mZcfHWuiKHHibdcY",
+  authDomain: "meusiteteste1-7b880.firebaseapp.com",
+  projectId: "meusiteteste1-7b880",
+  storageBucket: "meusiteteste1-7b880.appspot.com",
+  messagingSenderId: "107598819774",
+  appId: "1:107598819774:web:1e369753c4b7908a6209ef"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+const lista = document.getElementById("lista");
+const status = document.getElementById("status");
+const searchInput = document.getElementById("search");
+
+let dados = [];
+
+async function carregarAnamneses() {
+  lista.innerHTML = "";
+  status.innerText = "Carregando dados...";
+
+  const querySnapshot = await getDocs(collection(db, "anamneses_users"));
+  dados = [];
+
+  querySnapshot.forEach((docSnap) => {
+    dados.push({ id: docSnap.id, ...docSnap.data() });
+  });
+
+  status.innerText = `Total de fichas: ${dados.length}`;
+  renderizar(dados);
+}
+
+function renderizar(listaDados) {
+  lista.innerHTML = "";
+
+  if (listaDados.length === 0) {
+    lista.innerHTML = "<p>Nenhuma anamnese encontrada.</p>";
+    return;
+  }
+
+  listaDados.forEach(item => {
+    const div = document.createElement("div");
+    div.className = "card";
+
+    div.innerHTML = `
+      <h3>${item.nome || "Sem nome"}</h3>
+      <p><b>Email:</b> ${item.email || "-"}</p>
+      <p><b>Peso:</b> ${item.peso || "-"} kg</p>
+      <p><b>Altura:</b> ${item.altura || "-"} cm</p>
+      <p><b>Objetivo:</b> ${item.objetivo || "-"}</p>
+      <p><b>Frequência:</b> ${item.frequencia || "-"} dias/semana</p>
+      <p><b>Local:</b> ${item.local || "-"}</p>
+      <p><b>Lesão:</b> ${item.lesao || "-"}</p>
+      <p><b>Medicamento:</b> ${item.medicamento || "-"}</p>
+      <button class="btn btn-delete">Excluir</button>
+    `;
+
+    div.querySelector(".btn-delete").onclick = async () => {
+      if (confirm("Tem certeza que deseja excluir essa ficha?")) {
+        await deleteDoc(doc(db, "anamneses_users", item.id));
+        carregarAnamneses();
+      }
+    };
+
+    lista.appendChild(div);
+  });
+}
+
+// Busca
+searchInput.addEventListener("input", () => {
+  const termo = searchInput.value.toLowerCase();
+  const filtrados = dados.filter(item =>
+    (item.nome && item.nome.toLowerCase().includes(termo)) ||
+    (item.email && item.email.toLowerCase().includes(termo))
+  );
+  renderizar(filtrados);
+});
+
+carregarAnamneses();
+</script>
+
+</body>
+</html>

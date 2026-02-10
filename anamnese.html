@@ -22,7 +22,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            opacity: 0; /* Esconde até checar login */
+            opacity: 1;
             transition: opacity 0.5s;
         }
 
@@ -88,12 +88,6 @@
             background: rgba(255, 255, 255, 0.12);
         }
 
-        input:disabled {
-            background: rgba(255, 255, 255, 0.03);
-            color: rgba(255, 255, 255, 0.4);
-            cursor: not-allowed;
-        }
-
         option { background: #12081a; color: white; }
 
         .grid-2 {
@@ -122,12 +116,6 @@
             box-shadow: 0 5px 15px rgba(255, 31, 109, 0.4);
         }
 
-        button:disabled {
-            background: #555;
-            cursor: not-allowed;
-            transform: none;
-        }
-
         #status {
             text-align: center;
             font-size: 14px;
@@ -153,8 +141,8 @@
                 <input type="text" id="nome" required placeholder="Seu nome">
             </div>
             <div class="form-group">
-                <label>Seu E-mail (Automático)</label>
-                <input type="email" id="email" required readonly>
+                <label>Seu E-mail</label>
+                <input type="email" id="email" required>
             </div>
             <div class="grid-2">
                 <div class="form-group">
@@ -219,7 +207,6 @@
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-auth.js";
 import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -232,25 +219,11 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
 const db = getFirestore(app);
 
 const form = document.getElementById("anamnese-form");
 const status = document.getElementById("status");
 const btn = document.getElementById("btn-enviar");
-const emailInput = document.getElementById("email");
-
-let currentUserId = null;
-
-onAuthStateChanged(auth, (user) => {
-    if (user) {
-        currentUserId = user.uid;
-        emailInput.value = user.email;
-        document.body.style.opacity = "1";
-    } else {
-        window.location.href = "login.html";
-    }
-});
 
 form.addEventListener("submit", async function(event) {
     event.preventDefault();
@@ -260,10 +233,13 @@ form.addEventListener("submit", async function(event) {
     status.innerText = "Enviando dados...";
 
     try {
-        await setDoc(doc(db, "anamneses_users", currentUserId), {
-            uid: currentUserId,
-            nome: document.getElementById("nome").value,
-            email: emailInput.value,
+        const id = Date.now().toString();
+
+        const nomeAluno = document.getElementById("nome").value;
+
+        await setDoc(doc(db, "anamneses_users", id), {
+            nome: nomeAluno,
+            email: document.getElementById("email").value,
             peso: document.getElementById("peso").value,
             altura: document.getElementById("altura").value,
             lesao: document.getElementById("lesao").value,
@@ -276,10 +252,17 @@ form.addEventListener("submit", async function(event) {
         });
 
         status.style.color = "#00ff88";
-        status.innerText = "Ficha salva! Redirecionando...";
+        status.innerText = "Ficha salva! Redirecionando para o WhatsApp...";
+
+        // ✅ TROQUE PELO SEU NÚMERO (formato: 55DDDNUMERO)
+        const numeroWhatsApp = "5587996536247";
+
+        const mensagem = `Olá, meu nome é ${nomeAluno} e acabei de responder a minha ficha de anamnese!`;
+
+        const linkWhatsApp = `https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(mensagem)}`;
 
         setTimeout(() => {
-            window.location.href = "index.html";
+            window.location.href = linkWhatsApp;
         }, 1500);
 
     } catch (error) {
@@ -291,7 +274,6 @@ form.addEventListener("submit", async function(event) {
     }
 });
 </script>
-
 
 </body>
 </html>

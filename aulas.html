@@ -158,6 +158,8 @@ body {
       <h3 id="treinoTitulo">🏋️ Aguardando Treino...</h3>
       <p id="treinoDesc">O seu treinador ainda não postou o treino de hoje.</p>
       <a href="#" id="treinoVideo" target="_blank" class="video-link" style="display: none;">🎥 Ver Demonstração</a>
+      <!-- ADICIONADO -->
+      <a href="#" id="treinoPdf" target="_blank" class="video-link" style="display: none;">📥 Baixar Treino (PDF)</a>
     </div>
 
     <div class="card">
@@ -213,7 +215,6 @@ onAuthStateChanged(auth, async (user) => {
   } catch (e) { console.error("Erro ao buscar dados do usuário"); }
 
   // 2. OUVIRE O TREINO PERSONALIZADO (A MÁGICA ACONTECE AQUI)
-  // Agora buscamos o documento com o NOME DO EMAIL DO ALUNO
   const treinoRef = doc(db, "treinos", userEmail); 
   
   onSnapshot(treinoRef, (docSnap) => {
@@ -222,15 +223,21 @@ onAuthStateChanged(auth, async (user) => {
     if (docSnap.exists()) {
       const dados = docSnap.data();
       
-      // Atualiza o card principal com as observações do Admin
       document.getElementById("treinoTitulo").innerText = "🏋️ Meu Treino Personalizado";
       document.getElementById("treinoDesc").innerText = dados.instrucoes || "Siga o cronograma abaixo:";
 
-      // Limpar cards de treinos antigos se existirem para não duplicar na tela
+      // ADICIONADO - PDF
+      const pdfBtn = document.getElementById("treinoPdf");
+      if (dados.pdfUrl) {
+        pdfBtn.href = dados.pdfUrl;
+        pdfBtn.style.display = "inline-block";
+      } else {
+        pdfBtn.style.display = "none";
+      }
+
       const cardsAntigos = document.querySelectorAll('.card-dia-dinamico');
       cardsAntigos.forEach(c => c.remove());
 
-      // Renderizar cada dia do cronograma
       const dias = ["segunda", "terca", "quarta", "quinta", "sexta"];
       dias.forEach(dia => {
         if (dados.cronograma && dados.cronograma[dia] && dados.cronograma[dia].length > 0) {
