@@ -64,7 +64,6 @@
             <div class="dia-card"><h4>Sexta</h4><div id="lista-sexta"></div></div>
         </div>
 
-        <!-- ÁREA INVISÍVEL QUE VAI VIRAR PDF -->
         <div id="treinoPDF" style="background:white;color:black;padding:20px;display:none;">
             <h2>🏋️ Treino Personalizado</h2>
             <p id="pdfEmail"></p>
@@ -98,7 +97,6 @@ const storage = getStorage(app);
 // Estado local do treino
 let treinoData = { segunda: [], terca: [], quarta: [], quinta: [], sexta: [] };
 
-// Função para adicionar
 window.adicionarEx = (nome, arquivo) => {
     const dia = document.getElementById('diaAtual').value;
     treinoData[dia].push({ nome, arquivo });
@@ -122,7 +120,6 @@ function renderizar() {
     });
 }
 
-// 🔥 NOVO: gerar HTML do treino para PDF
 function gerarHTMLTreino(email, obs, dados) {
     let html = "";
 
@@ -141,7 +138,6 @@ function gerarHTMLTreino(email, obs, dados) {
     document.getElementById("pdfConteudo").innerHTML = html;
 }
 
-// FUNÇÃO SALVAR NO FIREBASE (ATUALIZADA, SEM REMOVER NADA)
 document.getElementById('btnSalvar').onclick = async () => {
     const email = document.getElementById('alunoEmail').value.toLowerCase().trim();
     const obs = document.getElementById('obsGeral').value;
@@ -149,22 +145,17 @@ document.getElementById('btnSalvar').onclick = async () => {
     if (!email) return alert("Digite o e-mail do aluno!");
 
     try {
-
-        // 1️⃣ gerar HTML do treino
         gerarHTMLTreino(email, obs, treinoData);
 
         const elemento = document.getElementById("treinoPDF");
 
-        // 2️⃣ gerar PDF
         const pdfBlob = await html2pdf().from(elemento).outputPdf('blob');
 
-        // 3️⃣ salvar PDF no Firebase Storage
         const pdfRef = ref(storage, `treinos/${email}.pdf`);
         await uploadBytes(pdfRef, pdfBlob);
 
         const pdfUrl = await getDownloadURL(pdfRef);
 
-        // 4️⃣ salvar no Firestore (igual ao teu sistema, só adicionando pdfUrl)
         const treinoRef = doc(db, "treinos", email);
 
         await setDoc(treinoRef, {
