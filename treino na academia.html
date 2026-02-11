@@ -6,172 +6,373 @@
   <title>Treino na Academia • Jéssica Personal</title>
   <link rel="icon" href="logo.ico">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700;800&display=swap" rel="stylesheet">
 
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
+    :root {
+      --primary: #ff4fa3;
+      --secondary: #ff1f6d;
+      --glass-bg: rgba(20, 10, 20, 0.6);
+      --glass-border: rgba(255, 255, 255, 0.15);
+      --neon-glow: 0 0 20px rgba(255, 79, 163, 0.4);
+    }
+
+    * { 
+      margin: 0; 
+      padding: 0; 
+      box-sizing: border-box; 
+      font-family: 'Outfit', sans-serif; 
+    }
+
     body {
-      background:
-        radial-gradient(circle at top right, rgba(255,120,180,0.25), transparent 40%),
-        radial-gradient(circle at bottom left, rgba(255,200,220,0.25), transparent 45%),
-        linear-gradient(135deg, #0a0a14, #12081a, #2a0a1f);
+      background: linear-gradient(-45deg, #0a0a14, #180511, #2a0a1f, #12000b);
+      background-size: 400% 400%;
+      animation: gradientBG 15s ease infinite;
       color: #fff;
       min-height: 100vh;
-      text-align: center;
-      padding: 40px 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      overflow-x: hidden;
+      position: relative;
     }
 
-    .container {
-      max-width: 750px;
-      margin: auto;
-      padding: 30px;
-      background: rgba(255,255,255,0.05);
-      backdrop-filter: blur(16px);
-      border-radius: 22px;
-      border: 1px solid rgba(255,255,255,0.1);
-      box-shadow: 0 20px 60px rgba(0,0,0,0.6);
-    }
-
-    h1 { font-size: 38px; margin-bottom: 10px; font-weight: 700; }
-    .subtitle { opacity: 0.85; font-size: 16px; margin-bottom: 30px; }
-
-    .section { margin: 25px 0; text-align: left; }
-    .section h2 { font-size: 22px; color: #ff9ac7; margin-bottom: 12px; }
-    .section p, .section ul { font-size: 15px; line-height: 1.6; opacity: 0.9; }
-    .section ul { list-style: none; padding-left: 0; }
-    .section ul li { position: relative; padding-left: 22px; margin-bottom: 10px; }
-    .section ul li::before {
-      content: '✔';
+    /* Elementos flutuantes (Consistência com as outras páginas) */
+    body::before {
+      content: '';
       position: absolute;
-      left: 0;
-      color: #ff4fa3;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(255,79,163,0.15) 0%, transparent 70%);
+      top: -50px;
+      left: -100px;
+      z-index: -1;
+      animation: float 6s ease-in-out infinite;
     }
 
-    .icons { display: flex; gap: 20px; flex-wrap: wrap; margin-top: 15px; }
-    .icons .icon-box {
-      flex: 1;
-      min-width: 150px;
-      background: rgba(255,255,255,0.04);
-      padding: 15px;
-      border-radius: 14px;
+    body::after {
+      content: '';
+      position: absolute;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(100,50,255,0.1) 0%, transparent 70%);
+      bottom: -100px;
+      right: -50px;
+      z-index: -1;
+      animation: float 8s ease-in-out infinite reverse;
+    }
+
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(20px); }
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Container Principal */
+    .container {
+      max-width: 600px;
+      width: 100%;
+      padding: 40px 30px;
+      background: var(--glass-bg);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      border-radius: 35px;
+      border: 1px solid var(--glass-border);
+      box-shadow: 0 25px 50px -12px rgba(0,0,0,0.8);
+      position: relative;
+      overflow: hidden;
       text-align: center;
-      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    /* Brilho no topo */
+    .container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
+    }
+
+    /* TÍTULOS */
+    h1 {
+      font-size: 34px;
+      font-weight: 800;
+      margin-bottom: 10px;
+      background: linear-gradient(to bottom, #ffffff, #ffcce6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .subtitle {
+      opacity: 0.7;
+      font-size: 16px;
+      margin-bottom: 35px;
+      line-height: 1.5;
+      font-weight: 300;
+    }
+
+    /* SEÇÕES */
+    .section-title {
+      font-size: 18px;
+      color: #ff9ac7;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 700;
+      margin: 30px 0 15px;
+      text-align: left;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    /* GRID DE CARACTERÍSTICAS (Igual Treino Casa) */
+    .grid-features {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+    }
+
+    .feature-card {
+      background: rgba(255,255,255,0.03);
+      padding: 20px 15px;
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.05);
+      text-align: center;
       transition: 0.3s;
     }
-    .icons .icon-box:hover { transform: translateY(-5px); box-shadow: 0 15px 35px rgba(255,79,163,0.4); }
-    .icons i { font-size: 28px; margin-bottom: 8px; color: #ff4fa3; }
 
-    .testimonial {
-      background: rgba(255,255,255,0.04);
-      border-radius: 14px;
-      padding: 15px 18px;
-      margin: 12px 0;
-      border-left: 4px solid #ff4fa3;
+    .feature-card:hover {
+      background: rgba(255, 79, 163, 0.1);
+      border-color: rgba(255, 79, 163, 0.3);
+      transform: translateY(-5px);
+    }
+
+    .feature-card i {
+      font-size: 24px;
+      color: #ff4fa3;
+      margin-bottom: 10px;
+      display: block;
+    }
+
+    .feature-card p {
       font-size: 14px;
+      font-weight: 500;
       opacity: 0.9;
     }
-    .testimonial span { font-weight: 600; color: #ff9ac7; }
 
-    .btn {
-      display: inline-block;
+    /* LISTA DE BENEFÍCIOS (Visual moderno em barra) */
+    .benefits-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .benefit-item {
+      background: rgba(255,255,255,0.03);
+      padding: 12px 15px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 15px;
+      text-align: left;
+      border: 1px solid transparent;
+      transition: 0.3s;
+    }
+
+    .benefit-item:hover {
+      border-color: rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.06);
+    }
+
+    .benefit-item i {
+      color: #00e676; 
+      background: rgba(0, 230, 118, 0.1);
+      padding: 5px;
+      border-radius: 50%;
+      font-size: 12px;
+    }
+
+    /* DEPOIMENTOS */
+    .testimonial {
+      background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01));
+      border-radius: 16px;
+      padding: 20px;
+      text-align: left;
+      margin-bottom: 15px;
+      border-left: 3px solid #ff4fa3;
+      font-size: 14px;
+      line-height: 1.6;
+      font-style: italic;
+    }
+
+    .testimonial span {
+      display: block;
+      margin-top: 10px;
+      font-style: normal;
+      font-weight: 700;
+      color: #ff9ac7;
+      font-size: 12px;
+      text-transform: uppercase;
+    }
+
+    /* BOTÕES */
+    .btn-action {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
       width: 100%;
-      padding: 15px;
-      margin-top: 20px;
-      border-radius: 14px;
+      padding: 18px;
+      margin-top: 30px;
+      border-radius: 16px;
       border: none;
-      font-weight: 600;
+      font-weight: 700;
       font-size: 16px;
       cursor: pointer;
-      background: linear-gradient(135deg, #ff4fa3, #ff1f6d);
+      background: linear-gradient(90deg, #ff4fa3, #ff1f6d);
       color: white;
-      transition: 0.25s;
-      box-shadow: 0 10px 30px rgba(255,79,163,0.4);
+      transition: 0.3s;
+      box-shadow: 0 10px 30px rgba(255, 31, 109, 0.3);
+      text-decoration: none;
     }
-    .btn:hover { transform: translateY(-2px) scale(1.02); box-shadow: 0 15px 40px rgba(255,79,163,0.6); }
-    .btn.secondary {
-      background: linear-gradient(135deg, #ffd1e8, #ff9ac7);
-      color: #2a0a1f;
-      box-shadow: 0 10px 30px rgba(255,154,199,0.4);
+
+    .btn-action:hover {
+      transform: scale(1.02);
+      box-shadow: 0 15px 40px rgba(255, 31, 109, 0.5);
     }
-    .btn.secondary:hover { box-shadow: 0 15px 40px rgba(255,154,199,0.6); }
-  .btn-back {
-  position: relative; 
-  display: block;
-  margin: 30px auto 0; 
-  background: linear-gradient(135deg, #ff4fa3, #ff1f6d);
-  color: #eae5e5;
-  padding: 10px 20px;
-  border-radius: 12px;
-  border: none;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  box-shadow: 0 10px 28px rgba(255,154,199,0.4);
-  transition: 0.22s;
-}
-    footer { margin-top: 20px; font-size: 12px; opacity: 0.5; text-align: center; }
+
+    .btn-back {
+      margin-top: 15px;
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.1);
+      color: rgba(255,255,255,0.6);
+      padding: 12px 25px;
+      border-radius: 50px;
+      cursor: pointer;
+      font-size: 13px;
+      transition: 0.3s;
+    }
+
+    .btn-back:hover {
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+    }
+
+    footer {
+      margin-top: 30px;
+      font-size: 11px;
+      opacity: 0.4;
+      border-top: 1px solid rgba(255,255,255,0.05);
+      padding-top: 20px;
+    }
+
+    /* Animação */
+    .animate-item {
+      opacity: 0;
+      animation: slideUp 0.6s ease forwards;
+    }
+    .delay-1 { animation-delay: 0.1s; }
+    .delay-2 { animation-delay: 0.2s; }
+    .delay-3 { animation-delay: 0.3s; }
+
+    @media (max-width: 500px) {
+      .grid-features { grid-template-columns: 1fr; }
+      h1 { font-size: 28px; }
+    }
   </style>
 </head>
 <body>
 
   <div class="container">
-    <h1>🏋️ Treino na Academia</h1>
-    <p class="subtitle">
-      Treinos completos com equipamentos, pesos livres e acompanhamento profissional, para resultados rápidos e eficientes.
-    </p>
+    
+    <div class="animate-item">
+      <h1>🏋️ Treino na Academia</h1>
+      <p class="subtitle">
+        Potencialize seus resultados com equipamentos profissionais e um plano de treino intenso feito para você.
+      </p>
+    </div>
 
-    <!-- COMO FUNCIONA -->
-    <div class="section">
-      <h2>⚡ Como funciona?</h2>
-      <div class="icons">
-        <div class="icon-box">
-          <i class="fa-solid fa-dumbbell"></i>
-          <p>Treinos com pesos livres e máquinas</p>
-        </div>
-        <div class="icon-box">
-          <i class="fa-solid fa-stopwatch"></i>
-          <p>Sessões de 40 a 60 min</p>
-        </div>
-        <div class="icon-box">
-          <i class="fa-solid fa-chart-line"></i>
-          <p>Progressão guiada passo a passo</p>
-        </div>
-        <div class="icon-box">
-          <i class="fa-solid fa-user-check"></i>
-          <p>Suporte direto com a Jéssica</p>
-        </div>
+    <h2 class="section-title animate-item delay-1"><i class="fa-solid fa-bolt"></i> Como funciona?</h2>
+    <div class="grid-features animate-item delay-1">
+      <div class="feature-card">
+        <i class="fa-solid fa-dumbbell"></i>
+        <p>Pesos e Máquinas</p>
+      </div>
+      <div class="feature-card">
+        <i class="fa-solid fa-stopwatch"></i>
+        <p>Sessões 40-60 min</p>
+      </div>
+      <div class="feature-card">
+        <i class="fa-solid fa-chart-line"></i>
+        <p>Progressão Guiada</p>
+      </div>
+      <div class="feature-card">
+        <i class="fa-solid fa-user-check"></i>
+        <p>Suporte Direto</p>
       </div>
     </div>
 
-    <!-- BENEFÍCIOS -->
-    <div class="section">
-      <h2>🔥 Benefícios do plano</h2>
-      <ul>
-        <li>Treinos estruturados e intensos</li>
-        <li>Resultados visíveis rapidamente</li>
-        <li>Desenvolvimento muscular completo</li>
-        <li>Orientação profissional constante</li>
-      </ul>
+    <h2 class="section-title animate-item delay-2"><i class="fa-solid fa-fire"></i> Benefícios</h2>
+    <div class="benefits-list animate-item delay-2">
+      <div class="benefit-item">
+        <i class="fa-solid fa-check"></i>
+        <span>Treinos estruturados e intensos</span>
+      </div>
+      <div class="benefit-item">
+        <i class="fa-solid fa-check"></i>
+        <span>Resultados visíveis rapidamente</span>
+      </div>
+      <div class="benefit-item">
+        <i class="fa-solid fa-check"></i>
+        <span>Desenvolvimento muscular completo</span>
+      </div>
+      <div class="benefit-item">
+        <i class="fa-solid fa-check"></i>
+        <span>Orientação profissional constante</span>
+      </div>
     </div>
 
-    <!-- DEPOIMENTOS -->
-    <div class="section">
-      <h2>💬 Depoimentos</h2>
+    <h2 class="section-title animate-item delay-3"><i class="fa-regular fa-comment-dots"></i> O que dizem</h2>
+    <div class="animate-item delay-3">
       <div class="testimonial">
-        "Treinar na academia com Jéssica mudou totalmente meu corpo! Super recomendo!" — <span>Carla - Ouricuri-PE</span>
+        "Treinar na academia com Jéssica mudou totalmente meu corpo! Super recomendo!"
+        <span>— Carla, Ouricuri-PE</span>
       </div>
       <div class="testimonial">
-        "A cada treino me sinto mais forte e confiante. Excelente acompanhamento. Ela arrasa!" — <span>Rafaela - Bodocó-PE</span>
+        "A cada treino me sinto mais forte e confiante. Excelente acompanhamento. Ela arrasa!"
+        <span>— Rafaela, Bodocó-PE</span>
       </div>
     </div>
 
-    <button class="btn" onclick="window.location.href='planos.html'">
-      💳 Ver Planos de Treino na Academia
-    </button>
-    <button class="btn-back" onclick="window.location.href='index.html'">Voltar</button>
+    <div class="animate-item delay-3">
+      <button class="btn-action" onclick="window.location.href='planos.html'">
+        💳 Ver Planos Academia
+      </button>
+
+      <button class="btn-back" onclick="window.location.href='index.html'">
+        <i class="fa-solid fa-arrow-left"></i> Voltar
+      </button>
+    </div>
 
     <footer>
       © 2026 • Jéssica Personal
     </footer>
+
   </div>
 
 </body>
