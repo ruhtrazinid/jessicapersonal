@@ -1,172 +1,243 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin - Montar Treino</title>
-    <style>
-        body { font-family: 'Segoe UI', sans-serif; background: #0a0a14; color: white; margin: 0; display: flex; height: 100vh; }
-        
-        .sidebar { width: 300px; background: rgba(255,255,255,0.05); border-right: 1px solid rgba(255,255,255,0.1); padding: 20px; overflow-y: auto; }
-        .ex-item { background: rgba(255,255,255,0.1); padding: 10px; margin-bottom: 10px; border-radius: 8px; cursor: pointer; transition: 0.3s; border: 1px solid transparent; }
-        .ex-item:hover { border-color: #ff4fa3; background: rgba(255,79,163,0.1); }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Montar Treino • Jéssica Personal</title>
+<link rel="icon" href="logo.ico">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-        .main { flex: 1; padding: 30px; overflow-y: auto; }
-        .header { background: rgba(255,255,255,0.05); padding: 20px; border-radius: 15px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.1); }
-        
-        input, textarea, select { width: 100%; padding: 12px; margin: 10px 0; background: #1a1a2e; border: 1px solid rgba(255,255,255,0.2); color: white; border-radius: 8px; }
-        
-        .grid-dias { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
-        .dia-card { background: rgba(255,255,255,0.03); padding: 15px; border-radius: 12px; border-top: 3px solid #ff4fa3; min-height: 150px; }
-        .dia-card h4 { margin-top: 0; color: #ff4fa3; text-transform: capitalize; }
-        
-        .ex-selecionado { background: #ff4fa3; color: white; padding: 5px 10px; border-radius: 4px; margin-bottom: 5px; font-size: 12px; display: flex; justify-content: space-between; }
-        .remove-btn { cursor: pointer; font-weight: bold; }
+<style>
+  :root {
+    --primary: #ff4fa3;
+    --glass-bg: rgba(20, 10, 20, 0.95);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --card-bg: rgba(255, 255, 255, 0.05);
+    --sidebar-width: 260px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Outfit', sans-serif; }
+  body {
+    background: linear-gradient(-45deg, #0a0a14, #180511, #2a0a1f, #12000b);
+    background-size: 400% 400%; animation: gradientBG 15s ease infinite;
+    color: #fff; min-height: 100vh; display: flex; overflow-x: hidden;
+  }
+  @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+  
+  /* SIDEBAR */
+  .sidebar { width: var(--sidebar-width); background: var(--glass-bg); border-right: 1px solid var(--glass-border); padding: 25px; position: fixed; height: 100vh; display: flex; flex-direction: column; z-index: 100; }
+  .brand { font-size: 20px; font-weight: 700; color: #fff; margin-bottom: 40px; display: flex; align-items: center; gap: 10px; }
+  .menu-item { display: flex; align-items: center; gap: 12px; padding: 14px 16px; margin-bottom: 8px; border-radius: 12px; cursor: pointer; color: rgba(255,255,255,0.6); transition: 0.3s; text-decoration: none; }
+  .menu-item:hover, .menu-item.active { background: rgba(255, 79, 163, 0.15); color: #fff; }
+  
+  /* MAIN */
+  .main { flex: 1; margin-left: var(--sidebar-width); padding: 20px; display: flex; gap: 20px; height: 100vh; overflow: hidden; }
+  
+  /* EXERCÍCIOS */
+  .exercises-panel { width: 300px; background: var(--card-bg); border: 1px solid var(--glass-border); border-radius: 20px; display: flex; flex-direction: column; overflow: hidden; }
+  .panel-header { padding: 15px; background: rgba(0,0,0,0.2); }
+  .search-ex { width: 100%; padding: 10px; border-radius: 10px; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); color: #fff; outline: none; }
+  .ex-categories { flex: 1; overflow-y: auto; padding: 10px; }
+  details { margin-bottom: 5px; background: rgba(255,255,255,0.02); border-radius: 8px; }
+  summary { padding: 10px; cursor: pointer; font-weight: 600; list-style: none; display: flex; justify-content: space-between; }
+  .ex-btn { padding: 8px; font-size: 13px; color: rgba(255,255,255,0.7); cursor: pointer; transition: 0.2s; }
+  .ex-btn:hover { color: #fff; padding-left: 15px; background: rgba(255,79,163,0.1); }
 
-        .btn-salvar { background: #ff4fa3; color: white; border: none; padding: 15px 40px; border-radius: 30px; font-weight: bold; cursor: pointer; float: right; margin-top: 20px; font-size: 16px; transition: 0.3s; }
-        .btn-salvar:hover { transform: scale(1.05); box-shadow: 0 0 20px rgba(255,79,163,0.4); }
-    </style>
+  /* BUILDER */
+  .builder-panel { flex: 1; display: flex; flex-direction: column; overflow-y: auto; padding-right: 5px; }
+  .builder-header { background: var(--card-bg); border: 1px solid var(--glass-border); border-radius: 20px; padding: 20px; margin-bottom: 20px; display: grid; grid-template-columns: 2fr 1fr; gap: 15px; }
+  .input-group label { display: block; font-size: 12px; margin-bottom: 5px; opacity: 0.7; }
+  .input-group input, .input-group select, .input-group textarea { width: 100%; padding: 10px; border-radius: 10px; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); color: #fff; outline: none; }
+  
+  .day-section { background: rgba(255,255,255,0.02); border: 1px solid var(--glass-border); border-radius: 16px; padding: 20px; margin-bottom: 20px; }
+  .day-title { font-size: 18px; font-weight: 700; color: var(--primary); margin-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; }
+  
+  .exercise-card { background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 15px; margin-bottom: 10px; position: relative; }
+  .exercise-header { display: flex; justify-content: space-between; margin-bottom: 10px; }
+  .exercise-inputs { display: grid; grid-template-columns: 0.8fr 0.8fr 1fr 1fr 2fr; gap: 10px; }
+  .inp-mini { background: rgba(255,255,255,0.1); border: none; border-radius: 6px; padding: 8px; color: white; font-size: 12px; width: 100%; }
+
+  .btn-save { 
+    background: linear-gradient(135deg, #ff4fa3, #ff1f6d); color: white; border: none; padding: 15px; 
+    border-radius: 12px; font-weight: 700; cursor: pointer; margin-top: 20px; margin-bottom: 50px; width: 100%;
+    transition: 0.3s; display: flex; justify-content: center; align-items: center; gap: 10px;
+  }
+  .btn-save:hover { transform: scale(1.02); box-shadow: 0 10px 30px rgba(255, 79, 163, 0.4); }
+
+  @media (max-width: 900px) { .sidebar { display: none; } .main { margin-left: 0; flex-direction: column; padding: 10px; } .exercises-panel { width: 100%; max-height: 250px; } .exercise-inputs { grid-template-columns: 1fr 1fr; } .exercise-inputs input:last-child { grid-column: span 2; } }
+</style>
 </head>
 <body>
 
 <div class="sidebar">
-    <h3>💪 Exercícios</h3>
-    <p><small>Selecione o dia no painel e clique no exercício para adicionar:</small></p>
-    
-    <div class="ex-item" onclick="adicionarEx('Supino Reto')">
-        <span>Supino Reto</span>
-    </div>
-    <div class="ex-item" onclick="adicionarEx('Abdominais')">
-        <span>Abdominais</span>
-    </div>
+  <div class="brand"><i class="fa-solid fa-bolt"></i><span>Jéssica Admin</span></div>
+  <a href="admin.html" class="menu-item"><i class="fa-solid fa-chart-pie"></i><span>Dashboard</span></a>
+  <a href="admin.html" class="menu-item"><i class="fa-solid fa-users"></i><span>Alunos</span></a>
+  <div class="menu-item active"><i class="fa-solid fa-dumbbell"></i><span>Montar Treino</span></div>
+  <a href="painel-anamnese.html" class="menu-item"><i class="fa-solid fa-clipboard-list"></i><span>Anamneses</span></a>
 </div>
 
 <div class="main">
-    <div class="header">
-        <h2>⚙️ Montar Treino Personalizado</h2>
-        <input type="email" id="alunoEmail" placeholder="E-mail do aluno">
-        <select id="diaAtual">
-            <option value="segunda">Segunda-feira</option>
-            <option value="terca">Terça-feira</option>
-            <option value="quarta">Quarta-feira</option>
-            <option value="quinta">Quinta-feira</option>
-            <option value="sexta">Sexta-feira</option>
+  <div class="exercises-panel">
+    <div class="panel-header">
+      <h3 style="margin-bottom:10px; color:#ff4fa3;">Banco de Exercícios</h3>
+      <input type="text" class="search-ex" placeholder="🔍 Buscar..." onkeyup="filtrarExercicios(this)">
+    </div>
+    <div class="ex-categories" id="bancoExercicios"></div>
+  </div>
+
+  <div class="builder-panel">
+    <div class="builder-header">
+      <div class="input-group">
+        <label>E-mail do Aluno</label>
+        <input type="email" id="alunoEmail" placeholder="joao@email.com">
+      </div>
+      <div class="input-group">
+        <label>Adicionar em:</label>
+        <select id="diaDestino">
+          <option value="segunda">Segunda-feira</option>
+          <option value="terca">Terça-feira</option>
+          <option value="quarta">Quarta-feira</option>
+          <option value="quinta">Quinta-feira</option>
+          <option value="sexta">Sexta-feira</option>
+          <option value="sabado">Sábado</option>
         </select>
-        <textarea id="obsGeral" rows="3" placeholder="Observações e dicas..."></textarea>
+      </div>
+      <div class="input-group" style="grid-column: span 2;">
+        <label>Observações Gerais</label>
+        <textarea id="obsGeral" rows="2" placeholder="Ex: Aquecimento 10min..."></textarea>
+      </div>
     </div>
 
-    <div class="grid-dias">
-        <div class="dia-card"><h4>Segunda</h4><div id="lista-segunda"></div></div>
-        <div class="dia-card"><h4>Terça</h4><div id="lista-terca"></div></div>
-        <div class="dia-card"><h4>Quarta</h4><div id="lista-quarta"></div></div>
-        <div class="dia-card"><h4>Quinta</h4><div id="lista-quinta"></div></div>
-        <div class="dia-card"><h4>Sexta</h4><div id="lista-sexta"></div></div>
-    </div>
+    <div id="daysContainer"></div>
 
-    <!-- ÁREA DO PDF -->
-    <div id="treinoPDF" style="background:white;color:black;padding:30px;width:800px;position:absolute;left:-9999px;">
-        <h1 style="text-align:center;color:#ff4fa3;">FICHA DE TREINO</h1>
-        <hr>
-        <p id="pdfEmail"></p>
-        <p id="pdfObs"></p>
-        <div id="pdfConteudo"></div>
-        <hr>
-        <p style="font-size:12px;text-align:center;">Jessica Personal Trainer</p>
-    </div>
-
-    <button class="btn-salvar" id="btnSalvar">🚀 Gerar PDF do Treino</button>
+    <button class="btn-save" id="btnSalvarFirebase">
+        <i class="fa-solid fa-paper-plane"></i> Enviar Treino para Aluno(a)
+    </button>
+  </div>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
+import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js";
 
-<script>
-let treinoData = { segunda: [], terca: [], quarta: [], quinta: [], sexta: [] };
+const firebaseConfig = {
+  apiKey: "AIzaSyAKLvhy6r6tLSMIEt-mZcfHWuiKHHibdcY",
+  authDomain: "meusiteteste1-7b880.firebaseapp.com",
+  projectId: "meusiteteste1-7b880",
+  storageBucket: "meusiteteste1-7b880.appspot.com",
+  messagingSenderId: "107598819774",
+  appId: "1:107598819774:web:1e369753c4b7908a6209ef"
+};
 
-function adicionarEx(nome) {
-    const dia = document.getElementById('diaAtual').value;
-    treinoData[dia].push({ nome });
-    renderizar();
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// BANCO DE DADOS
+const DB_EXERCICIOS = {
+  "Glúteos e Posterior": ["Agachamento Sumo", "Elevação Pélvica", "Stiff", "Mesa Flexora", "Cadeira Flexora", "Agachamento Búlgaro", "Glúteo 4 Apoios", "Abdutor", "Passada", "Levantamento Terra", "Glúteo Polia"],
+  "Quadríceps": ["Agachamento Livre", "Leg Press 45", "Cadeira Extensora", "Agachamento Hack", "Agachamento Frontal", "Sisi Squat", "Leg Horizontal", "Goblet Squat"],
+  "Costas": ["Puxada Alta", "Puxada Triângulo", "Remada Curvada", "Remada Cavalinho", "Remada Baixa", "Serrote", "Pulldown", "Graviton"],
+  "Peito": ["Supino Reto", "Supino Inclinado", "Crucifixo", "Peck Deck", "Flexão de Braço", "Crossover"],
+  "Ombros": ["Desenvolvimento", "Elevação Lateral", "Elevação Frontal", "Crucifixo Inverso", "Remada Alta", "Face Pull"],
+  "Braços": ["Rosca Direta", "Rosca Martelo", "Rosca Scott", "Tríceps Pulley", "Tríceps Testa", "Tríceps Francês", "Tríceps Banco"],
+  "Abdômen/Cardio": ["Abdominal Supra", "Infra", "Prancha", "Esteira", "Bike", "Elíptico"]
+};
+
+// GLOBAL STATE
+window.treinoData = { segunda: [], terca: [], quarta: [], quinta: [], sexta: [], sabado: [] };
+
+// INICIA
+function init() {
+  const container = document.getElementById('bancoExercicios');
+  const params = new URLSearchParams(window.location.search);
+  if(params.has('email')) document.getElementById('alunoEmail').value = params.get('email');
+
+  for (let cat in DB_EXERCICIOS) {
+    let itens = DB_EXERCICIOS[cat].map(ex => `<div class="ex-btn" onclick="addEx('${ex}')">${ex}</div>`).join('');
+    container.innerHTML += `<details><summary>${cat}</summary><div>${itens}</div></details>`;
+  }
 }
 
-function removerEx(dia, index) {
-    treinoData[dia].splice(index, 1);
-    renderizar();
+window.addEx = (nome) => {
+  const dia = document.getElementById('diaDestino').value;
+  window.treinoData[dia].push({ nome, series: "", reps: "", carga: "", descanso: "", obs: "" });
+  renderDays();
+  setTimeout(() => document.getElementById(`section-${dia}`).scrollIntoView({ behavior: 'smooth' }), 100);
 }
 
-function renderizar() {
-    const dias = ['segunda', 'terca', 'quarta', 'quinta', 'sexta'];
-    dias.forEach(dia => {
-        const container = document.getElementById(`lista-${dia}`);
-        container.innerHTML = treinoData[dia].map((ex, i) => `
-            <div class="ex-selecionado">
-                ${ex.nome} <span class="remove-btn" onclick="removerEx('${dia}', ${i})">✕</span>
-            </div>
-        `).join('');
+window.removeEx = (dia, idx) => {
+  window.treinoData[dia].splice(idx, 1);
+  renderDays();
+}
+
+window.updateData = (dia, idx, campo, val) => {
+  window.treinoData[dia][idx][campo] = val;
+}
+
+function renderDays() {
+  const container = document.getElementById('daysContainer');
+  container.innerHTML = "";
+  const nomes = {segunda:"Segunda", terca:"Terça", quarta:"Quarta", quinta:"Quinta", sexta:"Sexta", sabado:"Sábado"};
+
+  for(let dia in window.treinoData) {
+    if(window.treinoData[dia].length === 0) continue;
+    
+    let cards = window.treinoData[dia].map((ex, i) => `
+      <div class="exercise-card">
+        <div class="exercise-header"><span style="font-weight:bold">${ex.nome}</span><i class="fa-solid fa-trash" style="color:#ff1744;cursor:pointer" onclick="removeEx('${dia}', ${i})"></i></div>
+        <div class="exercise-inputs">
+          <input class="inp-mini" placeholder="Séries" value="${ex.series}" oninput="updateData('${dia}', ${i}, 'series', this.value)">
+          <input class="inp-mini" placeholder="Reps" value="${ex.reps}" oninput="updateData('${dia}', ${i}, 'reps', this.value)">
+          <input class="inp-mini" placeholder="Carga" value="${ex.carga}" oninput="updateData('${dia}', ${i}, 'carga', this.value)">
+          <input class="inp-mini" placeholder="Descanso" value="${ex.descanso}" oninput="updateData('${dia}', ${i}, 'descanso', this.value)">
+          <input class="inp-mini" placeholder="Obs" value="${ex.obs}" oninput="updateData('${dia}', ${i}, 'obs', this.value)">
+        </div>
+      </div>
+    `).join('');
+    
+    container.innerHTML += `<div class="day-section" id="section-${dia}"><div class="day-title">${nomes[dia]}</div>${cards}</div>`;
+  }
+}
+
+// SALVAR NO FIREBASE
+document.getElementById("btnSalvarFirebase").onclick = async () => {
+  const email = document.getElementById("alunoEmail").value.trim().toLowerCase();
+  const obs = document.getElementById("obsGeral").value;
+
+  if(!email) return alert("Digite o e-mail do aluno!");
+
+  const btn = document.getElementById("btnSalvarFirebase");
+  btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Enviando...';
+
+  try {
+    // Salva o JSON exato da estrutura do treino
+    await setDoc(doc(db, "treinos", email), {
+      cronograma: window.treinoData,
+      obsGeral: obs,
+      dataAtualizacao: new Date().toISOString()
+    });
+    alert(`✅ Treino enviado com sucesso para ${email}!`);
+  } catch (e) {
+    console.error(e);
+    alert("Erro ao enviar: " + e.message);
+  }
+  btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Enviar Treino para Aluno(a)';
+};
+
+window.filtrarExercicios = (input) => {
+    const termo = input.value.toLowerCase();
+    document.querySelectorAll('details').forEach(det => {
+        let achou = false;
+        det.querySelectorAll('.ex-btn').forEach(btn => {
+            if(btn.innerText.toLowerCase().includes(termo)) { btn.style.display='block'; achou=true; }
+            else { btn.style.display='none'; }
+        });
+        det.open = achou;
     });
 }
 
-function gerarHTMLTreino(email, obs, dados) {
-    const nomesDias = {
-        segunda: "Segunda-feira",
-        terca: "Terça-feira",
-        quarta: "Quarta-feira",
-        quinta: "Quinta-feira",
-        sexta: "Sexta-feira"
-    };
-
-    let html = "";
-
-    for (let dia in dados) {
-        if (dados[dia].length > 0) {
-            html += `<h3 style="color:#ff4fa3;margin-top:20px;">${nomesDias[dia]}</h3>`;
-            html += `<table style="width:100%;border-collapse:collapse;">`;
-            html += `<tr>
-                        <th style="border:1px solid #000;padding:6px;">#</th>
-                        <th style="border:1px solid #000;padding:6px;">Exercício</th>
-                     </tr>`;
-
-            dados[dia].forEach((ex, index) => {
-                html += `
-                    <tr>
-                        <td style="border:1px solid #000;padding:6px;">${index + 1}</td>
-                        <td style="border:1px solid #000;padding:6px;">${ex.nome}</td>
-                    </tr>
-                `;
-            });
-
-            html += `</table>`;
-        }
-    }
-
-    document.getElementById("pdfEmail").innerHTML = `<strong>Aluno:</strong> ${email}`;
-    document.getElementById("pdfObs").innerHTML = `<strong>Observações:</strong> ${obs || "Nenhuma observação."}`;
-    document.getElementById("pdfConteudo").innerHTML = html;
-}
-
-document.getElementById('btnSalvar').onclick = async () => {
-    const email = document.getElementById('alunoEmail').value.toLowerCase().trim();
-    const obs = document.getElementById('obsGeral').value;
-
-    if (!email) return alert("Digite o e-mail do aluno!");
-
-    gerarHTMLTreino(email, obs, treinoData);
-
-    await new Promise(resolve => setTimeout(resolve, 300));
-
-    const elemento = document.getElementById("treinoPDF");
-    const nomeArquivo = email.replace(/[@.]/g, "_") + "_treino.pdf";
-
-    const opt = {
-        margin: 10,
-        filename: nomeArquivo,
-        html2canvas: { scale: 2 },
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-    };
-
-    html2pdf().set(opt).from(elemento).save();
-
-    alert("✅ PDF gerado com sucesso!");
-};
+init();
 </script>
 </body>
 </html>

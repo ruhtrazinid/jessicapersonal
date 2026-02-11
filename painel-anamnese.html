@@ -1,87 +1,208 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Painel de Anamneses</title>
+<title>Anamneses • Jéssica Personal</title>
+<link rel="icon" href="logo.ico">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 <style>
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: #0a0a14;
-  color: white;
-  padding: 20px;
-}
+  :root {
+    --primary: #ff4fa3;
+    --secondary: #ff1f6d;
+    --glass-bg: rgba(20, 10, 20, 0.7);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --card-bg: rgba(255, 255, 255, 0.03);
+    --sidebar-width: 260px;
+    --danger: #ff1744;
+  }
 
-h1 {
-  text-align: center;
-  color: #ff1f6d;
-  margin-bottom: 20px;
-}
+  * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Outfit', sans-serif; }
 
-input {
-  width: 100%;
-  padding: 10px;
-  border-radius: 8px;
-  border: none;
-  margin-bottom: 15px;
-  outline: none;
-}
+  body {
+    background: linear-gradient(-45deg, #0a0a14, #180511, #2a0a1f, #12000b);
+    background-size: 400% 400%;
+    animation: gradientBG 15s ease infinite;
+    color: #fff;
+    min-height: 100vh;
+    display: flex; /* Layout Flex para Sidebar + Main */
+    overflow-x: hidden;
+  }
 
-.card {
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 12px;
-  padding: 15px;
-  margin-bottom: 12px;
-  transition: 0.2s;
-}
+  @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 
-.card:hover {
-  transform: scale(1.01);
-  border-color: #ff1f6d;
-}
+  /* SIDEBAR (Igual Admin) */
+  .sidebar {
+    width: var(--sidebar-width);
+    background: rgba(15, 10, 15, 0.8);
+    border-right: 1px solid var(--glass-border);
+    backdrop-filter: blur(20px);
+    padding: 25px;
+    position: fixed;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    z-index: 100;
+  }
 
-.card h3 {
-  margin: 0 0 8px;
-  color: #ff1f6d;
-}
+  .brand {
+    font-size: 20px; font-weight: 700; color: #fff; margin-bottom: 40px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .brand i { color: var(--primary); }
 
-.card p {
-  margin: 4px 0;
-  font-size: 14px;
-}
+  .menu-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 14px 16px; margin-bottom: 8px;
+    border-radius: 12px; cursor: pointer;
+    color: rgba(255,255,255,0.6);
+    transition: 0.3s; font-size: 14px; font-weight: 500;
+    text-decoration: none;
+  }
+  .menu-item:hover, .menu-item.active {
+    background: rgba(255, 79, 163, 0.15); color: #fff;
+  }
+  .menu-item.active { border-left: 3px solid var(--primary); }
 
-.btn {
-  margin-top: 10px;
-  padding: 8px 12px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 13px;
-}
+  /* MAIN CONTENT */
+  .main {
+    flex: 1; margin-left: var(--sidebar-width); padding: 30px;
+    width: calc(100% - var(--sidebar-width));
+  }
 
-.btn-delete {
-  background: #ff4d4d;
-  color: white;
-}
+  .header {
+    display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;
+  }
+  .header h2 { font-size: 28px; font-weight: 800; background: linear-gradient(to right, #fff, #ffcce0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
-.status {
-  text-align: center;
-  margin-top: 10px;
-  font-size: 14px;
-}
+  /* BUSCA */
+  .search-box { margin-bottom: 30px; position: relative; max-width: 500px; }
+  .search-box input {
+    width: 100%; padding: 16px 16px 16px 50px; border-radius: 14px;
+    background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border);
+    color: #fff; outline: none; font-size: 14px; transition: 0.3s;
+  }
+  .search-box input:focus { border-color: var(--primary); background: rgba(0,0,0,0.3); }
+  .search-box i { position: absolute; left: 18px; top: 50%; transform: translateY(-50%); color: rgba(255,255,255,0.4); }
+
+  /* GRID DE CARDS */
+  #lista {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 20px;
+  }
+
+  .card {
+    background: var(--card-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    padding: 25px;
+    backdrop-filter: blur(10px);
+    transition: 0.3s;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(255, 79, 163, 0.4);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  }
+
+  .card-header {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    margin-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 15px;
+  }
+  .card-header h3 { font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 4px; }
+  .card-header span { font-size: 12px; color: rgba(255,255,255,0.5); display: block; }
+  .icon-box {
+    width: 40px; height: 40px; border-radius: 10px;
+    background: rgba(255, 79, 163, 0.1); color: var(--primary);
+    display: flex; align-items: center; justify-content: center; font-size: 18px;
+  }
+
+  .stats-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px;
+  }
+  .stat-item {
+    background: rgba(255,255,255,0.03); padding: 8px 12px; border-radius: 8px;
+  }
+  .stat-label { font-size: 11px; text-transform: uppercase; opacity: 0.5; font-weight: 600; }
+  .stat-value { font-size: 14px; font-weight: 600; color: #fff; }
+
+  .details p { font-size: 13px; margin-bottom: 8px; color: rgba(255,255,255,0.8); line-height: 1.4; }
+  .details b { color: var(--secondary); font-weight: 600; }
+
+  /* Alertas (Lesão/Remédio) */
+  .alert-tag {
+    margin-top: 10px; padding: 8px; border-radius: 8px;
+    background: rgba(255, 23, 68, 0.1); border: 1px solid rgba(255, 23, 68, 0.2);
+    color: #ff8a80; font-size: 12px; display: flex; align-items: center; gap: 8px;
+  }
+
+  .btn-delete {
+    margin-top: auto;
+    width: 100%; padding: 12px;
+    border: none; border-radius: 10px; cursor: pointer;
+    background: rgba(255, 23, 68, 0.1); color: #ff1744;
+    font-weight: 600; font-size: 13px; transition: 0.2s;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  .btn-delete:hover { background: #ff1744; color: white; }
+
+  #status { margin-top: 20px; color: rgba(255,255,255,0.4); font-size: 13px; }
+
+  /* RESPONSIVO */
+  @media (max-width: 900px) {
+    .sidebar { display: none; } /* Em telas pequenas, simplifica ou usa menu hamburger (não incluído aqui p/ simplificar) */
+    .main { margin-left: 0; width: 100%; padding: 20px; }
+    #lista { grid-template-columns: 1fr; }
+  }
 </style>
 </head>
 <body>
 
-<h1>📊 Painel de Anamneses</h1>
+<div class="sidebar">
+  <div class="brand">
+    <i class="fa-solid fa-bolt"></i>
+    <span>Jéssica Admin</span>
+  </div>
 
-<input type="text" id="search" placeholder="Buscar por nome ou email...">
+  <a href="admin.html" class="menu-item">
+    <i class="fa-solid fa-chart-pie"></i>
+    <span>Dashboard</span>
+  </a>
+  <a href="admin.html" class="menu-item">
+    <i class="fa-solid fa-users"></i>
+    <span>Alunos</span>
+  </a>
+  <a href="montar-treino.html" class="menu-item">
+    <i class="fa-solid fa-dumbbell"></i>
+    <span>Montar Treino</span>
+  </a>
+  <div class="menu-item active">
+    <i class="fa-solid fa-clipboard-list"></i>
+    <span>Anamneses</span>
+  </div>
+</div>
 
-<div id="lista"></div>
-<p class="status" id="status"></p>
+<div class="main">
+  <div class="header">
+    <h2>📋 Painel de Anamneses</h2>
+  </div>
+
+  <div class="search-box">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <input type="text" id="search" placeholder="Buscar por nome, objetivo ou email...">
+  </div>
+
+  <div id="lista"></div>
+  <p id="status"></p>
+</div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
@@ -106,25 +227,31 @@ const searchInput = document.getElementById("search");
 let dados = [];
 
 async function carregarAnamneses() {
-  lista.innerHTML = "";
-  status.innerText = "Carregando dados...";
+  lista.innerHTML = '<div style="color:white; opacity:0.6;">Carregando fichas...</div>';
+  status.innerText = "";
 
-  const querySnapshot = await getDocs(collection(db, "anamneses_users"));
-  dados = [];
+  try {
+    const querySnapshot = await getDocs(collection(db, "anamneses_users"));
+    dados = [];
+    querySnapshot.forEach((docSnap) => {
+      dados.push({ id: docSnap.id, ...docSnap.data() });
+    });
+    
+    // Ordenar por data (se houver timestamp) ou nome
+    dados.sort((a, b) => (b.dataEnvio || 0) - (a.dataEnvio || 0));
 
-  querySnapshot.forEach((docSnap) => {
-    dados.push({ id: docSnap.id, ...docSnap.data() });
-  });
-
-  status.innerText = `Total de fichas: ${dados.length}`;
-  renderizar(dados);
+    status.innerText = `${dados.length} fichas encontradas`;
+    renderizar(dados);
+  } catch (error) {
+    lista.innerHTML = `<div style="color:#ff4d4d;">Erro ao carregar: ${error.message}</div>`;
+  }
 }
 
 function renderizar(listaDados) {
   lista.innerHTML = "";
 
   if (listaDados.length === 0) {
-    lista.innerHTML = "<p>Nenhuma anamnese encontrada.</p>";
+    lista.innerHTML = "<p style='opacity:0.6;'>Nenhuma ficha encontrada.</p>";
     return;
   }
 
@@ -132,36 +259,79 @@ function renderizar(listaDados) {
     const div = document.createElement("div");
     div.className = "card";
 
+    // Verifica alertas de saúde
+    let alertas = "";
+    if (item.lesao && item.lesao.length > 2) {
+      alertas += `<div class="alert-tag"><i class="fa-solid fa-triangle-exclamation"></i> Lesão: ${item.lesao}</div>`;
+    }
+    if (item.medicamento && item.medicamento.length > 2) {
+      alertas += `<div class="alert-tag"><i class="fa-solid fa-pills"></i> Med: ${item.medicamento}</div>`;
+    }
+
     div.innerHTML = `
-      <h3>${item.nome || "Sem nome"}</h3>
-      <p><b>Email:</b> ${item.email || "-"}</p>
-      <p><b>Peso:</b> ${item.peso || "-"} kg</p>
-      <p><b>Altura:</b> ${item.altura || "-"} cm</p>
-      <p><b>Objetivo:</b> ${item.objetivo || "-"}</p>
-      <p><b>Frequência:</b> ${item.frequencia || "-"} dias/semana</p>
-      <p><b>Local:</b> ${item.local || "-"}</p>
-      <p><b>Lesão:</b> ${item.lesao || "-"}</p>
-      <p><b>Medicamento:</b> ${item.medicamento || "-"}</p>
-      <button class="btn btn-delete">Excluir</button>
+      <div class="card-header">
+        <div>
+          <h3>${item.nome || "Sem nome"}</h3>
+          <span>${item.email || "Sem email"}</span>
+        </div>
+        <div class="icon-box"><i class="fa-solid fa-user-doctor"></i></div>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-item">
+          <div class="stat-label">Peso</div>
+          <div class="stat-value">${item.peso || "-"} kg</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">Altura</div>
+          <div class="stat-value">${item.altura || "-"} cm</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">Frequência</div>
+          <div class="stat-value">${item.frequencia || "-"}x / sem</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">Local</div>
+          <div class="stat-value">${item.local || "-"}</div>
+        </div>
+      </div>
+
+      <div class="details" style="margin-bottom: 15px;">
+        <p><b>Objetivo:</b> ${item.objetivo || "-"}</p>
+        <p><b>Cardíaco:</b> ${item.cardiaco || "Não"}</p>
+      </div>
+
+      ${alertas}
+
+      <button class="btn-delete" id="del-${item.id}">
+        <i class="fa-solid fa-trash"></i> Excluir Ficha
+      </button>
     `;
 
-    div.querySelector(".btn-delete").onclick = async () => {
-      if (confirm("Tem certeza que deseja excluir essa ficha?")) {
-        await deleteDoc(doc(db, "anamneses_users", item.id));
-        carregarAnamneses();
-      }
-    };
-
+    // Event Listener separado para evitar problemas de escopo
     lista.appendChild(div);
+    document.getElementById(`del-${item.id}`).onclick = () => excluirFicha(item.id, item.nome);
   });
 }
 
-// Busca
+window.excluirFicha = async (id, nome) => {
+  if (confirm(`Tem certeza que deseja apagar a ficha de ${nome}?`)) {
+    try {
+      await deleteDoc(doc(db, "anamneses_users", id));
+      carregarAnamneses();
+    } catch (e) {
+      alert("Erro ao excluir: " + e.message);
+    }
+  }
+};
+
+// Busca Inteligente
 searchInput.addEventListener("input", () => {
   const termo = searchInput.value.toLowerCase();
   const filtrados = dados.filter(item =>
     (item.nome && item.nome.toLowerCase().includes(termo)) ||
-    (item.email && item.email.toLowerCase().includes(termo))
+    (item.email && item.email.toLowerCase().includes(termo)) ||
+    (item.objetivo && item.objetivo.toLowerCase().includes(termo))
   );
   renderizar(filtrados);
 });

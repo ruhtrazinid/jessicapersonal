@@ -3,175 +3,195 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Área do Aluno</title>
+<title>Área do Aluno • Jéssica Personal</title>
 <link rel="icon" href="logo.ico">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 <style>
-* { box-sizing: border-box; }
+  :root {
+    --primary: #ff4fa3;
+    --secondary: #ff1f6d;
+    --glass-bg: rgba(20, 10, 20, 0.7);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --card-bg: rgba(255, 255, 255, 0.03);
+    --sidebar-width: 260px;
+  }
 
-body {
-  display: none; /* Mantido para proteção */
-  margin: 0;
-  font-family: 'Segoe UI', Arial, sans-serif;
-  background: linear-gradient(135deg, #0a0a14, #12081a, #2a0a1f);
-  color: white;
-  min-height: 100vh;
-  overflow-x: hidden;
-}
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Outfit', sans-serif; }
 
-/* HEADER */
-.topbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 14px 18px;
-  background: rgba(255,255,255,0.04);
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(255,255,255,0.1);
-}
+  body {
+    display: none; 
+    background: linear-gradient(-45deg, #0a0a14, #180511, #2a0a1f, #12000b);
+    background-size: 400% 400%;
+    animation: gradientBG 15s ease infinite;
+    color: #fff;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
 
-.menu-btn {
-  font-size: 22px;
-  cursor: pointer;
-  background: none;
-  border: none;
-  color: white;
-}
+  @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 
-.user-info { font-size: 16px; font-weight: 600; }
+  /* SIDEBAR */
+  .sidebar {
+    width: var(--sidebar-width);
+    background: rgba(15, 10, 15, 0.8);
+    border-right: 1px solid var(--glass-border);
+    backdrop-filter: blur(20px);
+    padding: 25px;
+    position: fixed;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    z-index: 100;
+    transition: 0.3s;
+  }
 
-/* MENU LATERAL */
-.sidebar {
-  position: fixed;
-  top: 0; left: 0;
-  width: 240px;
-  height: 100vh;
-  background: rgba(15,15,25,0.95);
-  backdrop-filter: blur(14px);
-  border-right: 1px solid rgba(255,255,255,0.12);
-  padding: 20px;
-  transform: translateX(-100%);
-  transition: 0.35s ease;
-  z-index: 1000;
-}
+  .brand {
+    font-size: 20px; font-weight: 700; color: #fff; margin-bottom: 40px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .brand i { color: var(--primary); }
 
-.sidebar.active { transform: translateX(0); }
-.sidebar h3 { margin-bottom: 20px; font-size: 18px; }
+  .menu-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 14px 16px; margin-bottom: 8px;
+    border-radius: 12px; cursor: pointer;
+    color: rgba(255,255,255,0.6);
+    transition: 0.3s; font-size: 14px; font-weight: 500;
+  }
+  .menu-item:hover, .menu-item.active {
+    background: rgba(255, 79, 163, 0.15); color: #fff;
+  }
+  .menu-item.active { border-left: 3px solid var(--primary); }
 
-.menu-item {
-  padding: 12px 14px;
-  border-radius: 10px;
-  margin-bottom: 10px;
-  cursor: pointer;
-  transition: 0.2s;
-  background: rgba(255,255,255,0.04);
-}
+  .sidebar-footer { margin-top: auto; padding-top: 20px; border-top: 1px solid var(--glass-border); }
+  .logout-btn {
+    width: 100%; padding: 12px; background: rgba(255, 23, 68, 0.1);
+    color: #ff1744; border: 1px solid rgba(255, 23, 68, 0.2);
+    border-radius: 10px; cursor: pointer; font-weight: 600;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    transition: 0.3s;
+  }
+  .logout-btn:hover { background: rgba(255, 23, 68, 0.2); }
 
-.menu-item:hover { background: rgba(255,79,163,0.25); }
+  /* MAIN CONTENT */
+  .main {
+    flex: 1; margin-left: var(--sidebar-width); padding: 30px;
+    width: calc(100% - var(--sidebar-width));
+    transition: 0.3s;
+  }
 
-.logout {
-  margin-top: 20px;
-  padding: 12px;
-  border-radius: 10px;
-  border: 1px solid rgba(255,255,255,0.3);
-  background: transparent;
-  color: white;
-  cursor: pointer;
-  width: 100%;
-}
+  /* HEADER MOBILE */
+  .mobile-header {
+    display: none;
+    align-items: center; justify-content: space-between;
+    padding: 15px 20px; background: rgba(15, 10, 15, 0.9);
+    backdrop-filter: blur(10px); border-bottom: 1px solid var(--glass-border);
+    position: sticky; top: 0; z-index: 90;
+  }
+  .menu-toggle { font-size: 24px; cursor: pointer; background: none; border: none; color: #fff; }
 
-/* OVERLAY */
-.overlay {
-  position: fixed; inset: 0;
-  background: rgba(0,0,0,0.6);
-  opacity: 0;
-  pointer-events: none;
-  transition: 0.3s;
-  z-index: 900;
-}
-.overlay.active { opacity: 1; pointer-events: all; }
+  /* DASHBOARD CARDS */
+  .welcome-box { margin-bottom: 30px; }
+  .welcome-box h2 { font-size: 28px; font-weight: 700; margin-bottom: 5px; }
+  .welcome-box p { opacity: 0.7; font-size: 14px; }
 
-/* CONTEÚDO */
-.dashboard {
-  max-width: 1000px;
-  margin: auto;
-  padding: 25px;
-}
+  /* ESTILOS DAS TABELAS DINÂMICAS */
+  .treino-container { display: flex; flex-direction: column; gap: 25px; }
+  
+  .day-card {
+    background: var(--card-bg); border: 1px solid var(--glass-border);
+    border-radius: 20px; padding: 25px; backdrop-filter: blur(10px);
+    animation: fadeInUp 0.5s ease;
+  }
+  @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-.cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 18px;
-}
+  .day-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 12px;
+  }
+  .day-header h3 { color: var(--primary); font-size: 22px; font-weight: 700; text-transform: capitalize; }
+  
+  .table-responsive { overflow-x: auto; width: 100%; border-radius: 12px; }
+  
+  .treino-table { width: 100%; border-collapse: collapse; font-size: 14px; min-width: 600px; }
+  .treino-table th { text-align: left; padding: 15px; color: rgba(255,255,255,0.4); font-weight: 600; text-transform: uppercase; font-size: 12px; letter-spacing: 1px; border-bottom: 1px solid var(--glass-border); }
+  .treino-table td { padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); color: rgba(255,255,255,0.9); }
+  .treino-table tr:hover td { background: rgba(255,255,255,0.02); }
+  .ex-nome { font-weight: 700; color: #fff; font-size: 15px; }
+  
+  .obs-geral { 
+    background: rgba(255, 79, 163, 0.1); padding: 20px; border-radius: 15px; 
+    border: 1px solid rgba(255, 79, 163, 0.2); margin-bottom: 30px; 
+    font-size: 14px; display: flex; gap: 15px; align-items: flex-start;
+  }
+  .obs-geral i { color: var(--primary); font-size: 18px; margin-top: 2px; }
 
-.card {
-  background: rgba(255,255,255,0.06);
-  border: 1px solid rgba(255,255,255,0.12);
-  border-radius: 18px;
-  padding: 20px;
-  backdrop-filter: blur(12px);
-  transition: 0.25s;
-}
+  /* OVERLAY MOBILE */
+  .overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.7);
+    opacity: 0; pointer-events: none; transition: 0.3s; z-index: 99;
+  }
+  .overlay.active { opacity: 1; pointer-events: all; }
 
-.card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 20px 60px rgba(255,79,163,0.3);
-}
-
-.card h3 { margin-bottom: 10px; font-size: 18px; color: #ff4fa3; }
-.card p { font-size: 14px; opacity: 0.9; line-height: 1.5; white-space: pre-wrap; }
-
-.video-link {
-    display: inline-block;
-    margin-top: 15px;
-    color: #ff4fa3;
-    text-decoration: none;
-    font-weight: bold;
-    font-size: 13px;
-    border: 1px solid #ff4fa3;
-    padding: 5px 10px;
-    border-radius: 8px;
-}
+  @media (max-width: 900px) {
+    .sidebar { transform: translateX(-100%); }
+    .sidebar.active { transform: translateX(0); }
+    .main { margin-left: 0; width: 100%; padding: 20px; }
+    .mobile-header { display: flex; }
+    .day-card { padding: 15px; }
+  }
 </style>
 </head>
 <body>
 
-<div class="sidebar" id="sidebar">
-  <h3>📚 Menu</h3>
-  <div class="menu-item">🏋️ Meu Treino</div>
-  <div class="menu-item">💳 Meu Plano</div>
-  <div class="menu-item">📊 Evolução</div>
-  <div class="menu-item">💬 Suporte</div>
-  <button class="logout" onclick="logout()">Sair</button>
-</div>
-
 <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
 
-<div class="topbar">
-  <button class="menu-btn" onclick="toggleMenu()">☰</button>
-  <div class="user-info" id="userName">👋 Carregando...</div>
+<div class="sidebar" id="sidebar">
+  <div class="brand">
+    <i class="fa-solid fa-bolt"></i>
+    <span>Área do Aluno</span>
+  </div>
+
+  <div class="menu-item active">
+    <i class="fa-solid fa-dumbbell"></i>
+    <span>Meu Treino</span>
+  </div>
+  
+  <div class="menu-item" onclick="window.open('https://wa.link/iv0wso', '_blank')"
+    <i class="fa-brands fa-whatsapp"></i>
+    <span>Suporte</span>
+  </div>
+
+  <div class="sidebar-footer">
+    <button class="logout-btn" onclick="logout()">
+      <i class="fa-solid fa-right-from-bracket"></i>
+      <span>Sair</span>
+    </button>
+  </div>
 </div>
 
-<div class="dashboard">
-  <div class="cards">
-    <div class="card" id="cardTreino">
-      <h3 id="treinoTitulo">🏋️ Aguardando Treino...</h3>
-      <p id="treinoDesc">O seu treinador ainda não postou o treino de hoje.</p>
-      <a href="#" id="treinoVideo" target="_blank" class="video-link" style="display: none;">🎥 Ver Demonstração</a>
-      <!-- ADICIONADO -->
-      <a href="#" id="treinoPdf" target="_blank" class="video-link" style="display: none;">📥 Baixar Treino (PDF)</a>
-    </div>
+<div class="mobile-header">
+  <button class="menu-toggle" onclick="toggleMenu()"><i class="fa-solid fa-bars"></i></button>
+  <div style="font-weight: 700;">Jéssica Personal</div>
+  <div style="width: 24px;"></div> 
+</div>
 
-    <div class="card">
-      <h3>💳 Meu Plano</h3>
-      <p id="userPlano">Verificando plano...</p>
-    </div>
-
-    <div class="card">
-      <h3>📅 Evolução</h3>
-      <p>Acompanhe seu progresso e medidas aqui.</p>
-    </div>
+<div class="main">
+  
+  <div class="welcome-box">
+    <h2 id="userName">👋 Seja Bem-Vindo!</h2>
+    <p id="userPlano">Segue abaixo o seu treino personalizado:</p>
   </div>
+
+  <div id="treinoDinamico" class="treino-container">
+      <div style="text-align: center; padding: 50px; opacity: 0.5;">
+          <i class="fa-solid fa-spinner fa-spin" style="font-size: 30px; margin-bottom: 10px;"></i>
+          <p>Buscando sua ficha de treino...</p>
+      </div>
+  </div>
+
 </div>
 
 <script type="module">
@@ -199,72 +219,118 @@ onAuthStateChanged(auth, async (user) => {
   }
 
   document.body.style.display = "block";
-  const userEmail = user.email.toLowerCase(); // Chave para buscar o treino
+  const userEmail = user.email.toLowerCase();
 
-  // 1. Buscar Nome e Plano do Aluno
+  // 1. Dados Básicos do Aluno
   const userRef = doc(db, "users", user.uid);
   try {
     const userSnap = await getDoc(userRef);
     if (userSnap.exists()) {
       const data = userSnap.data();
       document.getElementById("userName").innerText = "👋 Olá, " + (data.nome || "Aluno");
-      document.getElementById("userPlano").innerText = "Plano atual: " + (data.plano || "Básico");
-    } else {
-      document.getElementById("userName").innerText = "👋 Olá, " + userEmail;
+      document.getElementById("userPlano").innerText = "Plano: " + (data.plano || "Consultoria");
     }
-  } catch (e) { console.error("Erro ao buscar dados do usuário"); }
+  } catch (e) { console.error("Erro ao carregar dados do usuário"); }
 
-  // 2. OUVIRE O TREINO PERSONALIZADO (A MÁGICA ACONTECE AQUI)
-  const treinoRef = doc(db, "treinos", userEmail); 
+  // 2. ESCUTA O TREINO EM TEMPO REAL COM ORDEM CORRETA
+  const treinoRef = doc(db, "treinos", userEmail);
   
   onSnapshot(treinoRef, (docSnap) => {
-    const cardContainer = document.querySelector(".cards");
-    
+    const container = document.getElementById("treinoDinamico");
+    container.innerHTML = ""; 
+
     if (docSnap.exists()) {
-      const dados = docSnap.data();
-      
-      document.getElementById("treinoTitulo").innerText = "🏋️ Meu Treino Personalizado";
-      document.getElementById("treinoDesc").innerText = dados.instrucoes || "Siga o cronograma abaixo:";
+      const data = docSnap.data();
+      const cronograma = data.cronograma;
 
-      // PDF LOCAL AUTOMÁTICO (SEM FIREBASE STORAGE)
-const pdfBtn = document.getElementById("treinoPdf");
-
-// transforma email em nome de arquivo seguro
-const emailArquivo = userEmail.replace(/[@.]/g, "_");
-const pdfPath = `treinos/${emailArquivo}.pdf`;
-
-// mostra o botão sempre (se o arquivo existir no servidor, abre normal)
-pdfBtn.href = pdfPath;
-pdfBtn.style.display = "inline-block";
-
-
-      const cardsAntigos = document.querySelectorAll('.card-dia-dinamico');
-      cardsAntigos.forEach(c => c.remove());
-
-      const dias = ["segunda", "terca", "quarta", "quinta", "sexta"];
-      dias.forEach(dia => {
-        if (dados.cronograma && dados.cronograma[dia] && dados.cronograma[dia].length > 0) {
-          
-          const listaExercicios = dados.cronograma[dia].map(ex => `
-            <div style="margin-top:10px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:5px;">
-              <strong>${ex.nome}</strong><br>
-              <img src="${ex.arquivo}" style="width:100%; border-radius:8px; margin-top:5px;">
+      // Recado da Personal
+      if(data.obsGeral && data.obsGeral.trim() !== "") {
+        container.innerHTML += `
+          <div class="obs-geral">
+            <i class="fa-solid fa-circle-info"></i>
+            <div>
+              <strong>Recado da Jéssica:</strong><br>
+              ${data.obsGeral}
             </div>
+          </div>
+        `;
+      }
+
+      // --- CORREÇÃO DA ORDEM DOS DIAS ---
+      const ordemDias = ["segunda", "terca", "quarta", "quinta", "sexta", "sabado"];
+      const diasNomes = {
+        segunda: "Segunda-feira",
+        terca: "Terça-feira",
+        quarta: "Quarta-feira",
+        quinta: "Quinta-feira",
+        sexta: "Sexta-feira",
+        sabado: "Sábado"
+      };
+
+      let encontrouTreino = false;
+
+      // Percorre a lista na ordem que definimos acima
+      ordemDias.forEach(diaKey => {
+        const exercicios = cronograma[diaKey];
+        
+        if(exercicios && exercicios.length > 0) {
+          encontrouTreino = true;
+          
+          let linhasTabela = exercicios.map(ex => `
+            <tr>
+              <td class="ex-nome">${ex.nome}</td>
+              <td>${ex.series || "-"}</td>
+              <td>${ex.reps || "-"}</td>
+              <td>${ex.carga || "-"}</td>
+              <td>${ex.descanso || "-"}</td>
+              <td style="font-size:12px; font-style:italic; opacity:0.7;">${ex.obs || ""}</td>
+            </tr>
           `).join('');
 
-          const diaCard = document.createElement('div');
-          diaCard.className = 'card card-dia-dinamico';
-          diaCard.innerHTML = `
-            <h3 style="text-transform: capitalize;">📅 ${dia}</h3>
-            ${listaExercicios}
+          container.innerHTML += `
+            <div class="day-card">
+              <div class="day-header">
+                <h3>${diasNomes[diaKey]}</h3>
+                <span style="font-size:12px; opacity:0.5;">${exercicios.length} exercícios</span>
+              </div>
+              <div class="table-responsive">
+                <table class="treino-table">
+                  <thead>
+                    <tr>
+                      <th>Exercício</th>
+                      <th>Séries</th>
+                      <th>Reps</th>
+                      <th>Carga</th>
+                      <th>Desc.</th>
+                      <th>Técnica / Obs</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    ${linhasTabela}
+                  </tbody>
+                </table>
+              </div>
+            </div>
           `;
-          cardContainer.appendChild(diaCard);
         }
       });
 
+      if(!encontrouTreino) {
+        container.innerHTML = `
+          <div style="text-align:center; padding:50px; opacity:0.5;">
+            <i class="fa-solid fa-dumbbell" style="font-size:40px; margin-bottom:15px;"></i>
+            <p>Seu treino está sendo preparado pela Jéssica. Em breve aparecerá aqui!</p>
+          </div>
+        `;
+      }
+
     } else {
-      document.getElementById("treinoTitulo").innerText = "🏋️ Sem treino ainda";
-      document.getElementById("treinoDesc").innerText = "Seu treinador ainda está preparando seu plano personalizado.";
+      container.innerHTML = `
+        <div style="text-align:center; padding:50px; opacity:0.5;">
+          <i class="fa-solid fa-calendar-check" style="font-size:40px; margin-bottom:15px;"></i>
+          <p>Nenhum treino enviado para este e-mail ainda.</p>
+        </div>
+      `;
     }
   });
 });
@@ -278,5 +344,6 @@ window.toggleMenu = function() {
   document.getElementById("overlay").classList.toggle("active");
 }
 </script>
+
 </body>
 </html>
