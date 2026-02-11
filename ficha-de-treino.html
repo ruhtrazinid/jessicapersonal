@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Treino - Jéssica Personal</title>
+    <style>
+        body { font-family: "Source Sans Pro", sans-serif; margin: 0; padding: 20px; background-color: #f4f4f4; }
+        .print-container { width: 26cm; margin: auto; background: #fff; padding: 20px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        
+        /* Cabeçalho Personalizado */
+        .header { border-bottom: 3px solid #000; margin-bottom: 20px; padding-bottom: 10px; }
+        .header h1 { margin: 0; color: #14b7a1; font-size: 28px; text-transform: uppercase; }
+        .info-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        .info-table td { padding: 8px; border-bottom: 1px solid #eee; font-size: 14px; }
+        .info-table b { color: #14b7a1; text-transform: uppercase; }
+
+        /* Estrutura do Exercício (Fiel ao seu arquivo) */
+        .exercice { margin-top: 20px; border: 2px solid black; display: flex; flex-direction: column; page-break-inside: avoid; }
+        .title-2 { background: #a2a2a2; color: #000; padding: 10px; font-weight: bold; border-bottom: 2px solid black; text-transform: uppercase; text-align: center; }
+        
+        .exercice-content { display: flex; width: 100%; }
+        
+        /* Área da Imagem */
+        .img-container { width: 40%; padding: 10px; border-right: 2px solid black; display: flex; align-items: center; justify-content: center; min-height: 250px; }
+        .img-container img { max-width: 100%; max-height: 250px; }
+        .placeholder { border: 2px dashed #ccc; padding: 20px; color: #999; text-align: center; width: 100%; }
+
+        /* Tabela de Detalhes */
+        .details { width: 60%; }
+        .table-details { width: 100%; border-collapse: collapse; }
+        .table-details td { padding: 10px; text-align: center; border-bottom: 2px solid black; font-size: 14px; }
+        .table-details tr:nth-child(odd) { background-color: #d0d0d0; font-weight: bold; text-transform: uppercase; }
+        .table-details tr:last-child td { border-bottom: none; text-align: left; background: #fff; font-weight: normal; text-transform: none; }
+
+        /* Ajustes de Edição */
+        [contenteditable="true"] { outline: none; cursor: text; }
+        [contenteditable="true"]:hover { background: #f0fdfa; }
+
+        @media print {
+            body { background: none; padding: 0; }
+            .print-container { box-shadow: none; margin: 0; width: 100%; }
+            .no-print { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="print-container">
+    <div class="header">
+        <h1 contenteditable="true">JÉSSICA PERSONAL</h1>
+        <table class="info-table">
+            <tr>
+                <td><b>Atleta:</b> <span contenteditable="true">Nome do Aluno</span></td>
+                <td><b>Data:</b> <span contenteditable="true">__/__/____</span></td>
+            </tr>
+            <tr>
+                <td><b>Objetivo:</b> <span contenteditable="true">Ex: Emagrecimento / Hipertrofia</span></td>
+                <td><b>Treino:</b> <span contenteditable="true">A - Inferiores</span></td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="exercice">
+        <div class="title-2" contenteditable="true">1. AGACHAMENTO SUMÔ</div>
+        <div class="exercice-content">
+            <div class="img-container">
+                <div class="placeholder" contenteditable="true">
+                    <img src="img/stiff-halter.gif" alt="Stiff com Halteres">
+                </div>
+            </div>
+            <div class="details">
+                <table class="table-details">
+                    <tr>
+                        <td>Séries</td>
+                        <td>Repetições</td>
+                    </tr>
+                    <tr>
+                        <td contenteditable="true">4</td>
+                        <td contenteditable="true">12 a 15</td>
+                    </tr>
+                    <tr>
+                        <td>Carga</td>
+                        <td>Descanso</td>
+                    </tr>
+                    <tr>
+                        <td contenteditable="true">-- kg</td>
+                        <td contenteditable="true">45" a 60"</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">Observações / Descrição</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" contenteditable="true">
+                            Mantenha o peito aberto e os joelhos alinhados com a ponta dos pés.
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="exercice">
+        <div class="title-2" contenteditable="true">2. STIFF COM HALTERES</div>
+        <div class="exercice-content">
+            <div class="img-container">
+                <div class="placeholder" contenteditable="true">
+                    <img src="img/agachamento-sumo.gif" alt="Stiff com Halteres">
+                </div>
+            </div>
+            <div class="details">
+                <table class="table-details">
+                    <tr>
+                        <td>Séries</td>
+                        <td>Repetições</td>
+                    </tr>
+                    <tr>
+                        <td contenteditable="true">3</td>
+                        <td contenteditable="true">10</td>
+                    </tr>
+                    <tr>
+                        <td>Carga</td>
+                        <td>Descanso</td>
+                    </tr>
+                    <tr>
+                        <td contenteditable="true">-- kg</td>
+                        <td contenteditable="true">60"</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">Observações / Descrição</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" contenteditable="true">
+                            Desça o halter rente à coxa, mantendo a coluna neutra.
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>

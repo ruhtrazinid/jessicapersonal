@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Treino - Jéssica Personal</title>
+    <style>
+        :root { --primary: #14b7a1; --bg: #f0f2f5; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); margin: 0; padding: 10px; color: #333; }
+        .container { max-width: 800px; margin: auto; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        
+        /* Cabeçalho */
+        .header { background: #000; color: white; padding: 20px; text-align: center; }
+        .header h1 { margin: 0; color: var(--primary); font-size: 24px; text-transform: uppercase; letter-spacing: 2px; }
+        .info-bar { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 15px; background: #eee; font-size: 13px; }
+        .info-bar div b { color: var(--primary); }
+
+        /* Card de Exercício */
+        .ex-card { border-bottom: 5px solid var(--bg); display: flex; flex-direction: column; }
+        .ex-title { background: #d0d0d0; padding: 12px; font-weight: bold; text-transform: uppercase; font-size: 15px; border-left: 5px solid var(--primary); }
+        
+        .ex-content { display: flex; flex-wrap: wrap; }
+        
+        /* Área do GIF */
+        .ex-media { flex: 1; min-width: 300px; background: #fff; display: flex; align-items: center; justify-content: center; padding: 10px; border-right: 1px solid #eee; }
+        .ex-media img { max-width: 100%; border-radius: 8px; }
+
+        /* Tabela de Treino */
+        .ex-info { flex: 1; min-width: 300px; }
+        .stats-table { width: 100%; border-collapse: collapse; }
+        .stats-table td { padding: 12px; text-align: center; border-bottom: 1px solid #eee; border-right: 1px solid #eee; }
+        .label { background: #f9f9f9; font-size: 10px; font-weight: bold; text-transform: uppercase; color: #666; }
+        .value { font-size: 16px; font-weight: bold; }
+
+        .description { padding: 15px; font-size: 14px; background: #fff; line-height: 1.4; border-top: 1px solid #eee; }
+        .desc-label { font-weight: bold; color: var(--primary); font-size: 11px; text-transform: uppercase; display: block; margin-bottom: 5px; }
+
+        /* Edição */
+        [contenteditable="true"] { outline: none; border: 1px dashed transparent; }
+        [contenteditable="true"]:hover { border-color: var(--primary); background: #fafffe; }
+
+        @media (max-width: 600px) {
+            .ex-content { flex-direction: column; }
+            .ex-media { border-right: none; border-bottom: 1px solid #eee; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1 contenteditable="true">JÉSSICA PERSONAL</h1>
+    </div>
+
+    <div class="info-bar">
+        <div><b>ATLETA:</b> <span contenteditable="true">PAULO HENRIQUE</span></div>
+        <div><b>DATA:</b> <span contenteditable="true">10/02/2024</span></div>
+        <div><b>TREINO:</b> <span contenteditable="true">A - INFERIORES</span></div>
+        <div><b>OBJETIVO:</b> <span contenteditable="true">HIPERTROFIA</span></div>
+    </div>
+
+    <div class="ex-card">
+        <div class="ex-title" contenteditable="true">1. AGACHAMENTO SUMÔ</div>
+        <div class="ex-content">
+            <div class="ex-media">
+                <img src="https://imgur.com/a/vKF6Xo9" alt="Exercício" contenteditable="true">
+            </div>
+            <div class="ex-info">
+                <table class="stats-table">
+                    <tr>
+                        <td class="label">Séries</td>
+                        <td class="value" contenteditable="true">4</td>
+                    </tr>
+                    <tr>
+                        
+                        <td class="label">Repetições</td>
+                        <td class="value" contenteditable="true">12 a 15</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Carga</td>
+                        <td class="value" contenteditable="true">Ex: 50kg</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Descanso</td>
+                        <td class="value" contenteditable="true">60s</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Execução</td>
+                        <td class="value" contenteditable="true">Desça até os joelhos formarem 90°</td>

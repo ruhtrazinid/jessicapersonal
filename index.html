@@ -6,227 +6,342 @@
   <title>Home - Jéssica Personal</title>
   <link rel="icon" href="logo.ico">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700;800&display=swap" rel="stylesheet">
 
   <style>
+    :root {
+      --primary: #ff4fa3;
+      --secondary: #ff1f6d;
+      --dark-bg: #0f0c13;
+      --glass-border: rgba(255, 255, 255, 0.15);
+      --neon-glow: 0 0 20px rgba(255, 79, 163, 0.4);
+    }
+
     * { 
       margin: 0; 
       padding: 0; 
       box-sizing: border-box; 
-      font-family: 'Segoe UI', Arial, sans-serif; 
+      font-family: 'Outfit', sans-serif; /* Fonte mais arredondada e moderna */
     }
 
     body {
-      background:
-        radial-gradient(circle at top right, rgba(255,120,180,0.25), transparent 40%),
-        radial-gradient(circle at bottom left, rgba(255,200,220,0.25), transparent 45%),
-        linear-gradient(135deg, #0a0a14, #12081a, #2a0a1f);
+      background: linear-gradient(-45deg, #0a0a14, #180511, #2a0a1f, #12000b);
+      background-size: 400% 400%;
+      animation: gradientBG 15s ease infinite; /* Fundo se movendo */
       color: #fff;
       min-height: 100vh;
-      position: relative;
-      text-align: center;
       display: flex;
       align-items: center;
       justify-content: center;
       padding: 20px;
       overflow-x: hidden;
-    }
-
-    /* animação de entrada (sensação de app) */
-    .container {
-      animation: fadeUp 0.7s ease forwards;
-      opacity: 0;
-      transform: translateY(20px);
-    }
-
-    @keyframes fadeUp {
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .container {
-      max-width: 650px;
-      width: 100%;
-      padding: 28px;
-      background: rgba(255, 255, 255, 0.05);
-      backdrop-filter: blur(14px);
-      border-radius: 22px;
-      border: 1px solid rgba(255,255,255,0.1);
-      box-shadow: 0 20px 60px rgba(0,0,0,0.6);
       position: relative;
     }
 
-    h1 {
-      font-size: 40px;
-      margin-bottom: 10px;
-      font-weight: 700;
+    /* Partículas de luz no fundo para dar profundidade */
+    body::before {
+      content: '';
+      position: absolute;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(255,79,163,0.2) 0%, transparent 70%);
+      top: -50px;
+      left: -100px;
+      z-index: -1;
+      animation: float 6s ease-in-out infinite;
     }
 
-    p {
-      opacity: 0.85;
-      margin-bottom: 16px;
-      font-size: 15px;
+    body::after {
+      content: '';
+      position: absolute;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(100,50,255,0.15) 0%, transparent 70%);
+      bottom: -100px;
+      right: -50px;
+      z-index: -1;
+      animation: float 8s ease-in-out infinite reverse;
     }
 
-    .benefits {
-      margin: 8px 0 20px;
-      font-size: 14px;
-      opacity: 0.9;
-      line-height: 1.6;
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
     }
 
-    /* BOTÕES estilo app */
-    .btn {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(20px); }
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .container {
+      max-width: 480px;
       width: 100%;
-      padding: 15px;
-      margin: 11px 0;
-      border-radius: 14px;
-      border: none;
-      font-weight: 600;
-      font-size: 16px;
-      cursor: pointer;
-      background: linear-gradient(135deg, #ff4fa3, #ff1f6d);
-      color: white;
-      transition: 0.25s;
-      box-shadow: 0 10px 30px rgba(255,79,163,0.35);
+      padding: 40px 30px;
+      
+      /* Vidro Premium */
+      background: rgba(20, 10, 20, 0.6);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      border-radius: 35px;
+      border: 1px solid var(--glass-border);
+      box-shadow: 0 25px 50px -12px rgba(0,0,0,0.8), inset 0 0 0 1px rgba(255,255,255,0.05);
+      
+      text-align: center;
       position: relative;
       overflow: hidden;
     }
 
-    .btn:hover {
-      transform: translateY(-2px) scale(1.02);
-      box-shadow: 0 15px 40px rgba(255,79,163,0.55);
+    /* Brilho no topo do cartão */
+    .container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
     }
 
-    /* efeito toque tipo app */
-    .btn:active {
-      transform: scale(0.96);
-      opacity: 0.9;
+    /* CABEÇALHO */
+    .profile-icon {
+      width: 70px;
+      height: 70px;
+      background: linear-gradient(135deg, #333, #111);
+      border-radius: 50%;
+      margin: 0 auto 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 30px;
+      border: 2px solid rgba(255,79,163,0.5);
+      box-shadow: var(--neon-glow);
     }
 
-    .btn.secondary {
-      background: linear-gradient(135deg, #ffd1e8, #ff9ac7);
-      color: #2a0a1f;
-      box-shadow: 0 10px 30px rgba(255,154,199,0.35);
+    h1 {
+      font-size: 32px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      margin-bottom: 8px;
+      background: linear-gradient(to bottom, #ffffff, #ffcce6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 5px 15px rgba(255, 79, 163, 0.2);
     }
 
-    .btn.secondary:hover {
-      box-shadow: 0 15px 40px rgba(255,154,199,0.6);
+    p {
+      color: rgba(255,255,255,0.7);
+      font-size: 15px;
+      margin-bottom: 25px;
+      font-weight: 300;
     }
 
-    footer {
-      margin-top: 20px;
+    /* GRID DE BOTÕES */
+    .grid-buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px 15px;
+      border-radius: 20px;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Botão Principal (Casa/Academia) */
+    .btn-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      color: #fff;
+    }
+
+    .btn-card i {
+      font-size: 24px;
+      margin-bottom: 8px;
+      color: #ff4fa3;
+      transition: 0.3s;
+    }
+
+    .btn-card span {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .btn-card:hover {
+      background: rgba(255, 79, 163, 0.15);
+      border-color: #ff4fa3;
+      transform: translateY(-5px);
+      box-shadow: var(--neon-glow);
+    }
+
+    .btn-card:hover i {
+      transform: scale(1.1);
+      color: #fff;
+    }
+
+    /* Botão de Destaque (Planos) */
+    .btn-highlight {
+      width: 100%;
+      background: linear-gradient(90deg, #ff4fa3, #ff1f6d);
+      color: white;
+      padding: 18px;
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      margin-bottom: 20px;
+      box-shadow: 0 10px 30px rgba(255, 31, 109, 0.3);
+      flex-direction: row;
+      gap: 10px;
+    }
+
+    .btn-highlight:hover {
+      box-shadow: 0 15px 40px rgba(255, 31, 109, 0.5);
+      transform: scale(1.02);
+    }
+
+    /* Botões Secundários (Lista) */
+    .list-btn {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 15px 20px;
+      margin-bottom: 10px;
+      background: transparent;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      color: rgba(255,255,255,0.8);
+      font-size: 14px;
+      transition: 0.2s;
+      border-radius: 12px; /* leve arredondamento */
+    }
+
+    .list-btn:hover {
+      background: rgba(255,255,255,0.03);
+      color: #fff;
+      padding-left: 25px; /* Efeito de deslizar */
+    }
+
+    .list-btn i {
       font-size: 12px;
       opacity: 0.5;
     }
 
-    /* INSTAGRAM */
-    .insta-wrapper {
+    /* Redes Sociais */
+    .social-row {
       display: flex;
       justify-content: center;
-      margin-bottom: 12px;
+      gap: 15px;
+      margin-top: 25px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(255,255,255,0.05);
     }
 
-    .insta-btn {
-      background: transparent;
-      border: 1.5px solid rgba(255,255,255,0.3);
-      color: white;
-      padding: 9px 16px;
-      font-size: 14px;
-      border-radius: 12px;
-      transition: 0.25s ease;
+    .social-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.05);
       display: flex;
       align-items: center;
-      gap: 8px;
+      justify-content: center;
+      color: #fff;
+      text-decoration: none;
+      transition: 0.3s;
+      border: 1px solid transparent;
     }
 
-    .insta-btn i {
-      font-size: 16px;
-      color: #e1306c;
+    .social-icon:hover {
+      background: #fff;
+      color: #000;
+      transform: rotate(10deg);
     }
 
-    .insta-btn:hover {
-      background: rgba(255,255,255,0.08);
-      transform: scale(1.04);
-      border-color: #e1306c;
+    footer {
+      margin-top: 15px;
+      font-size: 11px;
+      opacity: 0.4;
     }
 
-    /* 📱 MOBILE PERFEITO */
-    @media (max-width: 600px) {
-      h1 {
-        font-size: 30px;
-      }
-
-      p {
-        font-size: 14px;
-      }
-
-      .container {
-        padding: 22px;
-        border-radius: 18px;
-      }
-
-      .btn {
-        font-size: 15px;
-        padding: 14px;
-      }
-
-      .benefits {
-        font-size: 13px;
-      }
+    /* Animação de entrada dos itens */
+    .animate-item {
+      opacity: 0;
+      animation: slideUp 0.6s ease forwards;
     }
+
+    .delay-1 { animation-delay: 0.1s; }
+    .delay-2 { animation-delay: 0.2s; }
+    .delay-3 { animation-delay: 0.3s; }
+    .delay-4 { animation-delay: 0.4s; }
+
   </style>
 </head>
 <body>
 
   <div class="container">
+    
+    <div class="profile-icon animate-item">
+      ⚡
+    </div>
 
-    <div class="insta-wrapper">
-      <button class="insta-btn" onclick="window.location.href='https://www.instagram.com/jessica_fagunde/'">
-        <i class="fa-brands fa-instagram"></i> @jessicafagunde
+    <h1 class="animate-item">Jéssica Personal</h1>
+    <p class="animate-item delay-1">Treinos personalizados para sua melhor versão.</p>
+
+    <div class="grid-buttons animate-item delay-2">
+      <button class="btn btn-card" onclick="window.location.href='treino-casa.html'">
+        <i class="fa-solid fa-house"></i>
+        <span>Em Casa</span>
+      </button>
+
+      <button class="btn btn-card" onclick="window.location.href='treino na academia.html'">
+        <i class="fa-solid fa-dumbbell"></i>
+        <span>Academia</span>
       </button>
     </div>
 
-    <h1>Transforme seu corpo 💖</h1>
-    <p>Escolha seu plano ideal e comece hoje mesmo sua evolução.</p>
+    <button class="btn btn-highlight animate-item delay-3" onclick="window.location.href='planos.html'">
+      Ver Planos Disponíveis <i class="fa-solid fa-arrow-right"></i>
+    </button>
 
-    <div class="benefits">
-      ✅ Treinos práticos e eficientes <br>
-      ✅ Para iniciantes e avançados <br>
-      ✅ Resultados reais em poucas semanas
+    <div class="animate-item delay-4">
+      <div class="list-btn" onclick="window.location.href='anamnese.html'" style="cursor: pointer;">
+        <span>📝 Ficha de Anamnese</span>
+        <i class="fa-solid fa-chevron-right"></i>
+      </div>
+      
+      <div class="list-btn" onclick="window.location.href='login.html'" style="cursor: pointer;">
+        <span>🔒 Área do Aluno</span>
+        <i class="fa-solid fa-chevron-right"></i>
+      </div>
     </div>
 
-    <button class="btn" onclick="window.location.href='treino-casa.html'">
-      🏠 Treino em Casa 
-    </button>
-
-    <button class="btn secondary" onclick="window.location.href='treino na academia.html'">
-      🏋️ Treino na Academia 
-    </button>
-
-    <button class="btn secondary" onclick="window.location.href='planos.html'">
-      💳 Ver Todos os Planos
-    </button>
-
-    <button class="btn secondary" onclick="window.location.href='anamnese.html'">
-      💪 Teste de Ansqamnese
-    </button>
-
-    <button class="btn secondary" onclick="window.location.href='login.html'">
-      🔒 Área do Aluno(a)
-    </button>
-
-    <button class="btn secondary" onclick="window.location.href='https://wa.link/iv0wso'">
-      📲 Tirar dúvidas no WhatsApp
-    </button>
+    <div class="social-row animate-item delay-4">
+      <a href="https://www.instagram.com/jessica_fagunde/" class="social-icon">
+        <i class="fa-brands fa-instagram"></i>
+      </a>
+      <a href="https://wa.link/iv0wso" class="social-icon">
+        <i class="fa-brands fa-whatsapp"></i>
+      </a>
+    </div>
 
     <footer>
-      © 2026 • Jéssica Personal • Todos os direitos reservados.
+      © 2026 Jéssica Personal
     </footer>
 
   </div>

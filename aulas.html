@@ -226,14 +226,17 @@ onAuthStateChanged(auth, async (user) => {
       document.getElementById("treinoTitulo").innerText = "🏋️ Meu Treino Personalizado";
       document.getElementById("treinoDesc").innerText = dados.instrucoes || "Siga o cronograma abaixo:";
 
-      // ADICIONADO - PDF
-      const pdfBtn = document.getElementById("treinoPdf");
-      if (dados.pdfUrl) {
-        pdfBtn.href = dados.pdfUrl;
-        pdfBtn.style.display = "inline-block";
-      } else {
-        pdfBtn.style.display = "none";
-      }
+      // PDF LOCAL AUTOMÁTICO (SEM FIREBASE STORAGE)
+const pdfBtn = document.getElementById("treinoPdf");
+
+// transforma email em nome de arquivo seguro
+const emailArquivo = userEmail.replace(/[@.]/g, "_");
+const pdfPath = `treinos/${emailArquivo}.pdf`;
+
+// mostra o botão sempre (se o arquivo existir no servidor, abre normal)
+pdfBtn.href = pdfPath;
+pdfBtn.style.display = "inline-block";
+
 
       const cardsAntigos = document.querySelectorAll('.card-dia-dinamico');
       cardsAntigos.forEach(c => c.remove());

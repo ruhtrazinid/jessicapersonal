@@ -10,7 +10,6 @@
         .sidebar { width: 300px; background: rgba(255,255,255,0.05); border-right: 1px solid rgba(255,255,255,0.1); padding: 20px; overflow-y: auto; }
         .ex-item { background: rgba(255,255,255,0.1); padding: 10px; margin-bottom: 10px; border-radius: 8px; cursor: pointer; transition: 0.3s; border: 1px solid transparent; }
         .ex-item:hover { border-color: #ff4fa3; background: rgba(255,79,163,0.1); }
-        .ex-item img { width: 100%; border-radius: 4px; margin-top: 5px; }
 
         .main { flex: 1; padding: 30px; overflow-y: auto; }
         .header { background: rgba(255,255,255,0.05); padding: 20px; border-radius: 15px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.1); }
@@ -30,83 +29,69 @@
 </head>
 <body>
 
-    <div class="sidebar">
-        <h3>💪 Exercícios</h3>
-        <p><small>Selecione o dia no painel e clique no exercício para adicionar:</small></p>
-        
-        <div class="ex-item" onclick="adicionarEx('Supino Reto', 'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJueXF4ZzR6ZzR6ZzR6ZzR6ZzR6ZzR6ZzR6ZzR6ZzR6JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/3o7TKMGpxx6V0Qv93G/giphy.gif')">
-            <span>Supino Reto</span>
-        </div>
-        <div class="ex-item" onclick="adicionarEx('Abdominais', 'img/Abdominais.gif')">
-            <span>Abdominais</span>
-        </div>
+<div class="sidebar">
+    <h3>💪 Exercícios</h3>
+    <p><small>Selecione o dia no painel e clique no exercício para adicionar:</small></p>
+    
+    <div class="ex-item" onclick="adicionarEx('Supino Reto')">
+        <span>Supino Reto</span>
+    </div>
+    <div class="ex-item" onclick="adicionarEx('Abdominais')">
+        <span>Abdominais</span>
+    </div>
+</div>
+
+<div class="main">
+    <div class="header">
+        <h2>⚙️ Montar Treino Personalizado</h2>
+        <input type="email" id="alunoEmail" placeholder="E-mail do aluno">
+        <select id="diaAtual">
+            <option value="segunda">Segunda-feira</option>
+            <option value="terca">Terça-feira</option>
+            <option value="quarta">Quarta-feira</option>
+            <option value="quinta">Quinta-feira</option>
+            <option value="sexta">Sexta-feira</option>
+        </select>
+        <textarea id="obsGeral" rows="3" placeholder="Observações e dicas..."></textarea>
     </div>
 
-    <div class="main">
-        <div class="header">
-            <h2>⚙️ Montar Treino Personalizado</h2>
-            <input type="email" id="alunoEmail" placeholder="E-mail exato do aluno (ex: arthur@email.com)">
-            <select id="diaAtual">
-                <option value="segunda">Segunda-feira</option>
-                <option value="terca">Terça-feira</option>
-                <option value="quarta">Quarta-feira</option>
-                <option value="quinta">Quinta-feira</option>
-                <option value="sexta">Sexta-feira</option>
-            </select>
-            <textarea id="obsGeral" rows="3" placeholder="Observações e dicas para o aluno..."></textarea>
-        </div>
-
-        <div class="grid-dias">
-            <div class="dia-card"><h4>Segunda</h4><div id="lista-segunda"></div></div>
-            <div class="dia-card"><h4>Terça</h4><div id="lista-terca"></div></div>
-            <div class="dia-card"><h4>Quarta</h4><div id="lista-quarta"></div></div>
-            <div class="dia-card"><h4>Quinta</h4><div id="lista-quinta"></div></div>
-            <div class="dia-card"><h4>Sexta</h4><div id="lista-sexta"></div></div>
-        </div>
-
-        <div id="treinoPDF" style="background:white;color:black;padding:20px;display:none;">
-            <h2>🏋️ Treino Personalizado</h2>
-            <p id="pdfEmail"></p>
-            <p id="pdfObs"></p>
-            <div id="pdfConteudo"></div>
-        </div>
-
-        <button class="btn-salvar" id="btnSalvar">🚀 Publicar Treino</button>
+    <div class="grid-dias">
+        <div class="dia-card"><h4>Segunda</h4><div id="lista-segunda"></div></div>
+        <div class="dia-card"><h4>Terça</h4><div id="lista-terca"></div></div>
+        <div class="dia-card"><h4>Quarta</h4><div id="lista-quarta"></div></div>
+        <div class="dia-card"><h4>Quinta</h4><div id="lista-quinta"></div></div>
+        <div class="dia-card"><h4>Sexta</h4><div id="lista-sexta"></div></div>
     </div>
+
+    <!-- ÁREA DO PDF -->
+    <div id="treinoPDF" style="background:white;color:black;padding:30px;width:800px;position:absolute;left:-9999px;">
+        <h1 style="text-align:center;color:#ff4fa3;">FICHA DE TREINO</h1>
+        <hr>
+        <p id="pdfEmail"></p>
+        <p id="pdfObs"></p>
+        <div id="pdfConteudo"></div>
+        <hr>
+        <p style="font-size:12px;text-align:center;">Jessica Personal Trainer</p>
+    </div>
+
+    <button class="btn-salvar" id="btnSalvar">🚀 Gerar PDF do Treino</button>
+</div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
-import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js";
-import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-storage.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyAKLvhy6r6tLSMIEt-mZcfHWuiKHHibdcY",
-  authDomain: "meusiteteste1-7b880.firebaseapp.com",
-  projectId: "meusiteteste1-7b880",
-  storageBucket: "meusiteteste1-7b880.appspot.com",
-  messagingSenderId: "107598819774",
-  appId: "1:107598819774:web:1e369753c4b7908a6209ef"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const storage = getStorage(app);
-
-// Estado local do treino
+<script>
 let treinoData = { segunda: [], terca: [], quarta: [], quinta: [], sexta: [] };
 
-window.adicionarEx = (nome, arquivo) => {
+function adicionarEx(nome) {
     const dia = document.getElementById('diaAtual').value;
-    treinoData[dia].push({ nome, arquivo });
+    treinoData[dia].push({ nome });
     renderizar();
-};
+}
 
-window.removerEx = (dia, index) => {
+function removerEx(dia, index) {
     treinoData[dia].splice(index, 1);
     renderizar();
-};
+}
 
 function renderizar() {
     const dias = ['segunda', 'terca', 'quarta', 'quinta', 'sexta'];
@@ -121,20 +106,40 @@ function renderizar() {
 }
 
 function gerarHTMLTreino(email, obs, dados) {
+    const nomesDias = {
+        segunda: "Segunda-feira",
+        terca: "Terça-feira",
+        quarta: "Quarta-feira",
+        quinta: "Quinta-feira",
+        sexta: "Sexta-feira"
+    };
+
     let html = "";
 
     for (let dia in dados) {
         if (dados[dia].length > 0) {
-            html += `<h3>${dia.toUpperCase()}</h3><ul>`;
-            dados[dia].forEach(ex => {
-                html += `<li>${ex.nome}</li>`;
+            html += `<h3 style="color:#ff4fa3;margin-top:20px;">${nomesDias[dia]}</h3>`;
+            html += `<table style="width:100%;border-collapse:collapse;">`;
+            html += `<tr>
+                        <th style="border:1px solid #000;padding:6px;">#</th>
+                        <th style="border:1px solid #000;padding:6px;">Exercício</th>
+                     </tr>`;
+
+            dados[dia].forEach((ex, index) => {
+                html += `
+                    <tr>
+                        <td style="border:1px solid #000;padding:6px;">${index + 1}</td>
+                        <td style="border:1px solid #000;padding:6px;">${ex.nome}</td>
+                    </tr>
+                `;
             });
-            html += "</ul>";
+
+            html += `</table>`;
         }
     }
 
-    document.getElementById("pdfEmail").innerText = "Aluno: " + email;
-    document.getElementById("pdfObs").innerText = "Observações: " + obs;
+    document.getElementById("pdfEmail").innerHTML = `<strong>Aluno:</strong> ${email}`;
+    document.getElementById("pdfObs").innerHTML = `<strong>Observações:</strong> ${obs || "Nenhuma observação."}`;
     document.getElementById("pdfConteudo").innerHTML = html;
 }
 
@@ -144,33 +149,23 @@ document.getElementById('btnSalvar').onclick = async () => {
 
     if (!email) return alert("Digite o e-mail do aluno!");
 
-    try {
-        gerarHTMLTreino(email, obs, treinoData);
+    gerarHTMLTreino(email, obs, treinoData);
 
-        const elemento = document.getElementById("treinoPDF");
+    await new Promise(resolve => setTimeout(resolve, 300));
 
-        const pdfBlob = await html2pdf().from(elemento).outputPdf('blob');
+    const elemento = document.getElementById("treinoPDF");
+    const nomeArquivo = email.replace(/[@.]/g, "_") + "_treino.pdf";
 
-        const pdfRef = ref(storage, `treinos/${email}.pdf`);
-        await uploadBytes(pdfRef, pdfBlob);
+    const opt = {
+        margin: 10,
+        filename: nomeArquivo,
+        html2canvas: { scale: 2 },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
 
-        const pdfUrl = await getDownloadURL(pdfRef);
+    html2pdf().set(opt).from(elemento).save();
 
-        const treinoRef = doc(db, "treinos", email);
-
-        await setDoc(treinoRef, {
-            instrucoes: obs,
-            cronograma: treinoData,
-            pdfUrl: pdfUrl,
-            dataAtualizacao: new Date().toISOString()
-        });
-
-        alert("🔥 Treino enviado com PDF para " + email);
-
-    } catch (e) {
-        console.error(e);
-        alert("Erro ao salvar treino. Verifique o console.");
-    }
+    alert("✅ PDF gerado com sucesso!");
 };
 </script>
 </body>
