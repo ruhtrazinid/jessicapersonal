@@ -110,6 +110,23 @@ button:hover {
   margin-top: 12px;
   color: #f9a8d4;
 }
+
+/* --- CORREÇÃO PARA MOBILE JÉSSICA PERSONAL --- */
+body {
+    min-height: 100vh !important;
+    width: 100% !important;
+    margin: 0;
+    /* Aqui vai o fundo que você usa no PC. Exemplo de um tom escuro Premium: */
+    background: #0f0f0f !important; 
+    background-attachment: fixed !important;
+    background-size: cover !important;
+}
+
+/* Isso garante que nada no meio do caminho force a cor branca */
+html, #root, .main-container {
+    background-color: transparent !important;
+}
+
 </style>
 </head>
 <body>
